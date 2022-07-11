@@ -1,2 +1,8 @@
+
+#dependencis
 HelloWorlds/graphql/node_modules
 node_modules
+
+
+#API keys
+.env

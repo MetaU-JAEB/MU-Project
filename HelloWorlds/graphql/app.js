@@ -4,7 +4,11 @@ const mongoose = require('mongoose');
 const {ApolloServer, gql} = require('apollo-server-express')
 const schema = require('./schema/schemaMongoose')
 
-mongoose.connect('mongodb+srv://jose:angel@parkingcluster.0iavg.mongodb.net/?retryWrites=true&w=majority');
+/// GATTING THE DB URL
+const mongoURL = process.env.MONGO
+//console.log("mongooo",mongoURL);
+
+mongoose.connect(mongoURL);
 mongoose.connection.once('open', () => {
     console.log('Connected to database');
 })
