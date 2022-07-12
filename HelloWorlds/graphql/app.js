@@ -9,7 +9,7 @@ const mongoURL = process.env.MONGO;
 
 mongoose.connect(mongoURL);
 mongoose.connection.once('open', () => {
-  // console.log('Connected to database');
+  // console.log('Connected to databasee');
 });
 
 const app = express();
