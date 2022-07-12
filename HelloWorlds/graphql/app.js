@@ -2,7 +2,7 @@ const express = require('express')
 const { graphqlHTTP } = require('express-graphql')
 const mongoose = require('mongoose');
 const { ApolloServer, gql } = require('apollo-server-express')
-const schema = require('./schema/schemaMongoose')
+const schema = require('./schema/schemaDiscriminator')
 
 /// GATTING THE DB URL
 const mongoURL = process.env.MONGO
