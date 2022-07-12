@@ -38,6 +38,7 @@ const PersonSchema = new mongoose.Schema({
     gender: String,
     hairColor: String,
     starships: [String],
+    friendsIds : [mongoose.Schema.Types.ObjectId]
 });
 
 // set discriminator Key
@@ -68,6 +69,34 @@ const DroidTC = CharacterDTC.discriminator(DroidModel, droidTypeConverterOptions
 const PersonTC = CharacterDTC.discriminator(PersonModel);  // baseOptions -> customizationsOptions applied
 
 //console.log('Resolvers',DroidTC.getResolvers())
+PersonTC.addRelation(
+    'friends',
+    {
+      resolver: () => PersonTC.getResolver('findByIds'),
+      prepareArgs: { // resolver `findByIds` has `_ids` arg, let provide value to it
+        _ids: (source) => source.friendsIds,
+      },
+      projection: { friendsIds: 1 }, // point fields in source object, which should be fetched from DB
+    }
+  );
+  PersonTC.addRelation(
+    'adultFriendsWithSameGender',
+    {
+      resolver: () => PersonTC.getResolver('findMany'),
+      prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+        filter: (source) => ({
+          _operators : { // Applying criteria on fields which have
+                         // operators enabled for them (by default, indexed fields only)
+            _id : { in: source.friendsIds },
+            mass: { gt: 24 }
+          },
+          gender: source.gender,
+        }),
+        limit: 10,
+      },
+      projection: { friendsIds: 1, gender: 1 }, // required fields from source object
+    }
+  );
 
 // You may now use CharacterDTC to add fields to all Discriminators
 schemaComposer.Query.addFields({
