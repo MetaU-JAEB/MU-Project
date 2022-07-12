@@ -7,10 +7,10 @@ const schema = require('./schema/schemaDiscriminatorWithRelations');
 const mongoURL = process.env.MONGO;
 // console.log("mongooo",mongoURL);
 
-mongoose.connect(mongoURL);
+/* mongoose.connect(mongoURL);
 mongoose.connection.once('open', () => {
-  // console.log('Connected to databasee');
-});
+   console.log('Connected to databasee');
+}); */
 
 const app = express();
 
