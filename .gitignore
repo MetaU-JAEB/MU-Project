@@ -1,6 +1,7 @@
-node_modules
+/node_modules
+/Front-end/parquick/node_modules
 
 .DS_Store
 .env
-HelloWorlds/graphql/.env
-HelloWorlds/graphql/
+/HelloWorlds/graphql/.env
+/HelloWorlds/graphql/
