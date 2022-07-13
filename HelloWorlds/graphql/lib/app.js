@@ -11,11 +11,11 @@ const schema = require('./schema/schemaDiscriminatorWithRelations'); /// GATTING
 
 const mongoURL = process.env.MONGO; // console.log("mongooo",mongoURL);
 
-/* mongoose.connect(mongoURL);
+mongoose.connect(mongoURL);
 mongoose.connection.once('open', () => {
-   console.log('Connected to databasee');
-}); */
-
+  // eslint-disable-next-line no-console
+  console.log('Connected to databasee');
+});
 const app = express();
 const server = new ApolloServer({
   schema,
