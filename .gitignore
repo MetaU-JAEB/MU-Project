@@ -1,7 +1,12 @@
-/node_modules
-/Front-end/parquick/node_modules
+#dependencies
+HelloWorlds/graphql/node_modules
+node_modules
 
-.DS_Store
+
+#API keys
 .env
-/HelloWorlds/graphql/.env
-/HelloWorlds/graphql/
+HelloWorlds/graphql/.env
+HelloWorlds/graphql/
+
+#Other
+.DS_Store
