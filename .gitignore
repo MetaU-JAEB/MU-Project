@@ -1,8 +1,13 @@
 
-#dependencis
+#dependencies
 HelloWorlds/graphql/node_modules
 node_modules
 
 
 #API keys
 .env
+HelloWorlds/graphql/.env
+HelloWorlds/graphql/
+
+#Other
+.DS_Store
