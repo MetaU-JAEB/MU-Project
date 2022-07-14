@@ -9,7 +9,7 @@ function Register(): React.MixedElement {
     const [userType, setUserType] = useState("");
 
     useEffect(() => {
-        console.log('user type selected: ', userType);
+        // console.log('user type selected: ', userType);
     }, [userType])
 
     function handlerOnChangeRadioType(event) {
@@ -18,7 +18,7 @@ function Register(): React.MixedElement {
 
     function handleOnSubmitRegister(event) {
         event.preventDefault();
-        console.log("submitting");
+        // console.log("submitting");
     }
 
 
