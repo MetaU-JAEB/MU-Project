@@ -4,7 +4,7 @@ import './Register.css';
 
 function Register () : React.MixedElement {
     return <>
-
+        <p>Register</p>
     </>
 }
 

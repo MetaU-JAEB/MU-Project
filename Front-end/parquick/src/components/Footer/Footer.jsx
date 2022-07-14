@@ -4,7 +4,7 @@ import './Footer.css';
 
 function Footer () : React.MixedElement {
     return <>
-
+        <p>Footer</p>
     </>
 }
 

@@ -4,7 +4,7 @@ import './AddParking.css';
 
 function AddParking () : React.MixedElement {
     return <>
-
+        <p>Add parking</p>
     </>
 }
 

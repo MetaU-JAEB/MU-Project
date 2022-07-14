@@ -4,7 +4,7 @@ import './Login.css';
 
 function Login () : React.MixedElement {
     return <>
-
+        <p>Login</p>
     </>
 }
 
