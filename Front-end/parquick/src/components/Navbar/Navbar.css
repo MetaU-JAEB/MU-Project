@@ -1,0 +1,14 @@
+.navbar{
+    display: flex;
+}
+.navbar-left{
+    flex: 1;
+}
+.navbar-right{
+    flex: 4;
+    text-align: end;
+    padding-right: 20px;
+}
+.navbar-item{
+    margin: 10px;
+}

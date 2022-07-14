@@ -18,5 +18,7 @@
         "react"
     ],
     "rules": {
+        "no-unused-vars": ["error", { "args": "none" }],
+        "react/prop-types": "off"
     }
 }
