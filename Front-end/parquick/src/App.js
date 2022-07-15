@@ -23,7 +23,7 @@ import Register from './components/Register/Register';
 const testUser = {
   name:"Juan",
   type:'owner',
-  logged: false
+  logged: true
 }
 
 
@@ -40,13 +40,13 @@ function App(): React.MixedElement {
       <BrowserRouter>
         <Navbar user={user}></Navbar>
         <Routes>
-          <Route path="/" element={<Main  />} />
-          <Route path="/Rented" element={<Rented  />} />
-          <Route path="/AddParking" element={<AddParking  />} />
-          <Route path="/Dashboard" element={<Dashboard  />} />
-          <Route path="/LogOut" element={<LogOut />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/Register" element={<Register />} />
+          <Route path="/" element={<Main user={user}/>} />
+          <Route path="Rented" element={<Rented  />} />
+          <Route path="AddParking" element={<AddParking  />} />
+          <Route path="Dashboard" element={<Dashboard  />} />
+          <Route path="LogOut" element={<LogOut />} />
+          <Route path="Login" element={<Login />} />
+          <Route path="Register" element={<Register />} />
           <Route path="parking/:parkingId" element={<Parking  />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

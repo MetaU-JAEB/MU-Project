@@ -1,5 +1,8 @@
 *{
-  border: solid 1px red;
+  border: solid 1px slategray;
+}
+body{
+  background-color: #ddd;
 }
 
 .App {

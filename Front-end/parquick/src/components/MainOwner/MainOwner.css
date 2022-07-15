@@ -1,0 +1,14 @@
+.owner-options{
+    margin: 30px auto;
+    display: flex;
+}
+.owner-option{
+    flex: 1;
+}
+
+.owner-parkings{
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    overflow: hidden;
+}

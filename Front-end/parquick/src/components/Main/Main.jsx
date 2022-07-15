@@ -1,10 +1,29 @@
-// @flow
+//
 import * as React from 'react'
+import MainDriver from '../MainDriver/MainDriver';
+import MainOwner from '../MainOwner/MainOwner';
 import './Main.css';
 
-function Main(): React.MixedElement {
+/* type User = {
+    name : string,
+    type : string,
+    logged: boolean
+} */
+
+function Main({user}): React.MixedElement {
     return <>
-        <p>main</p>
+        {
+            user.type === "owner" ?
+            <>
+                <MainOwner></MainOwner>
+            </>
+            : user.type === "driver" ?
+            <>
+                <MainDriver></MainDriver>
+            </>
+            :
+            <></>
+        }
     </>
 }
 

@@ -11,7 +11,7 @@ import './Navbar.css';
 
 const defaultUser = {
     name: "Jose",
-    type: "driver",
+    type: "owner",
     logged: true
 }
 

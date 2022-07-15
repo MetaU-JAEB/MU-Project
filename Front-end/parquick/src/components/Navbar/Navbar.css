@@ -1,5 +1,6 @@
 .navbar{
     display: flex;
+    margin-bottom: 40px;
 }
 .navbar-left{
     flex: 1;
