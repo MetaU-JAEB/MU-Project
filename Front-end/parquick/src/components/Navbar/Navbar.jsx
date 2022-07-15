@@ -11,12 +11,12 @@ import './Navbar.css';
 
 const defaultUser = {
     name: "Jose",
-    type: "owner",
+    type: "driver",
     logged: true
 }
 
 function Navbar({ user = defaultUser }): React.MixedElement {
-    console.log('User', user);
+    // console.log('User', user);
     return <>
         <div className='navbar'>
             <div className="navbar-left logo">

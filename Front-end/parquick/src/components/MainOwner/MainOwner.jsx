@@ -6,14 +6,14 @@ import { Link } from 'react-router-dom';
 import ParkingCard from '../ParkingCard/ParkingCard';
 import './MainOwner.css';
 
-const testParkings = [1,2,3,4,5,5,6,7,8,9,10]
+const testParkings = [1,2,3,4,5,6,7,8,9,10]
 
 function MainOwner(): React.MixedElement {
 
         const [address, setAddress] = useState("");
 
         useEffect(()=>{
-            console.log("address: ", address);
+            // console.log("address: ", address);
         },[address])
 
         function handleOnChangeAddress (event) {

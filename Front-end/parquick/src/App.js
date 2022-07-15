@@ -22,7 +22,7 @@ import Register from './components/Register/Register';
 
 const testUser = {
   name:"Juan",
-  type:'owner',
+  type:'driver',
   logged: true
 }
 
@@ -32,7 +32,7 @@ function App(): React.MixedElement {
   const [user, /* setUser */] = useState(testUser);
 
   useEffect(()=>{
-    console.log()
+    //console.log()
   },[])
 
   return (
