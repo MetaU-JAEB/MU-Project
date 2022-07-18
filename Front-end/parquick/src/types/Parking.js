@@ -1,6 +1,6 @@
 // @flow
 
-type ParkingType = {
+export type Parking = {
     address : string,
     minPrice? : number,
     images? : [string],
@@ -13,4 +13,7 @@ type ParkingType = {
     isInInterior? : number,
     isWorking? : number
 }
-export type Parking = ParkingType;
+
+export const testParking = {
+    address : "Sunnyvale"
+}

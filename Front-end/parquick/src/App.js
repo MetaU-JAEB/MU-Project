@@ -13,23 +13,15 @@ import Dashboard from './components/Dashboard/Dashboard';
 import LogOut from './components/LogOut/LogOut';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
+import type { User } from './types/User';
+import { testUser } from "./types/User";
 
-/* type User = {
-  name : string,
-  type : string,
-  logged: boolean
-} */
 
-const testUser = {
-  name:"Juan",
-  type:'owner',
-  logged: true
-}
 
 
 function App(): React.MixedElement {
 
-  const [user, /* setUser */] = useState(testUser);
+  const [user, /* setUser */] = useState<User>(testUser);
 
   useEffect(()=>{
     //console.log()
