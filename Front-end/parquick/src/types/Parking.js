@@ -2,12 +2,14 @@
 
 export type Parking = {
     address : string,
-    minPrice? : number,
+    lat? : string,
+    lon? : string,
+    price? : number,
     images? : [string],
     width? : number,
     length? : number,
     height? : number,
-    lotsCount? : number,
+    totalLots? : number,
     lotsAvailable? : number,
     hasShade? : number,
     isInInterior? : number,

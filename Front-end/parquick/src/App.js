@@ -24,7 +24,7 @@ function App(): React.MixedElement {
   const [user, /* setUser */] = useState<User>(testUser);
 
   useEffect(()=>{
-    //console.log()
+    // TODO: Fetch whatever that needs to be fetched at the begining
   },[])
 
   return (
