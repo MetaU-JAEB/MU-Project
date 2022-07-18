@@ -1,13 +1,20 @@
-
+// @flow
 import * as React from 'react'
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 
-/* type User = {
+
+type User = {
     name : string,
     type : string,
     logged : boolean
-  } */
+}
+
+type Props = {
+    user : User
+}
+
+
 
 const defaultUser = {
     name: "Jose",
@@ -15,8 +22,9 @@ const defaultUser = {
     logged: true
 }
 
-function Navbar({ user = defaultUser }): React.MixedElement {
-    // console.log('User', user);
+function Navbar({ user = defaultUser } : Props): React.MixedElement {
+    // TODO: use redux, Context or Local storage to save user data and
+    // display info according to user type
     return <>
         <div className='navbar'>
             <div className="navbar-left logo">
@@ -24,7 +32,7 @@ function Navbar({ user = defaultUser }): React.MixedElement {
             </div>
             <div className="navbar-right">
                 {
-                    user.logged === true ?
+                    user.logged ?
                         <>
                             <Link className='navbar-item' to="/"> Main </Link>
                             {

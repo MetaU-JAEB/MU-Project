@@ -10,10 +10,10 @@ function MainDriver(): React.MixedElement {
     const [filter, setFilter] = useState("");
 
     useEffect(() => {
-         // console.log("address: ", address);
+         // TODO: when the address changes, maps should recommend other parkings
     }, [address])
     useEffect(() => {
-         // console.log("filter: ", filter)
+         // TODO: display parkings based on the new filter requested
     }, [filter]);
 
 

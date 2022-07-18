@@ -13,7 +13,7 @@ function MainOwner(): React.MixedElement {
         const [address, setAddress] = useState("");
 
         useEffect(()=>{
-            // console.log("address: ", address);
+            // TODO: display owner's parkings close to the specified address
         },[address])
 
         function handleOnChangeAddress (event) {

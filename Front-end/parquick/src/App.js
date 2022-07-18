@@ -1,4 +1,4 @@
-
+// @flow
 import './App.css';
 import * as React from "react";
 import { useState, useEffect } from "react";
@@ -22,7 +22,7 @@ import Register from './components/Register/Register';
 
 const testUser = {
   name:"Juan",
-  type:'driver',
+  type:'owner',
   logged: true
 }
 

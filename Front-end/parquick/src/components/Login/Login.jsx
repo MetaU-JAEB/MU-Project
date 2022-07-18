@@ -9,12 +9,13 @@ function Login(): React.MixedElement {
     const [password, setPassword] = useState("");
 
     useEffect(()=>{
-        // console.log("email: ", email, ". pass: ", password);
+        // TODO: when email or password changes maybe change the style
+        // of the submit button (toggles disability for the moment)
     }, [email, password]);
 
     function handleOnSubmitLogin(event){
         event.preventDefault();
-        // console.log("loggining");
+        // TODO: make query to the server and log in
     }
 
     return <>
