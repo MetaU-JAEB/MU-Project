@@ -1,14 +1,24 @@
 // @flow
 import * as React from 'react'
+import { useContext, useEffect } from "react";
+import { userContext } from '../../contexts/UserContext';
 import './LogOut.css';
+import { useNavigate } from "react-router-dom";
 
 function LogOut () : React.MixedElement {
+    const {setUser} = useContext(userContext);
+    const navigate = useNavigate();
 
     function logout () {
         // TODO : delete current user Data
-        window.location.href = "/login";
+        setUser({logged : false});
+        navigate('/Login');
     }
-    logout();
+
+    useEffect(()=>{
+        logout();
+    },[])
+
 
     return <>
         <p>Logout</p>
