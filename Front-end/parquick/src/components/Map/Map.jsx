@@ -1,6 +1,6 @@
 //
 import * as React from 'react'
-import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api'
+import { GoogleMap, useLoadScript, Marker} from '@react-google-maps/api'
 import './Map.css';
 import { useCallback } from 'react';
 import { useRef } from 'react';
@@ -14,15 +14,17 @@ import { useEffect } from 'react';
 
 function Map(): React.MixedElement {
 
-    const [location, setLocation] = useState({});
+
+    const [location, setLocation] = useState();
 
 
     const mapRef = useRef();
-    const center = useMemo(() => ({ lat: 43, lng: -80 }), []);
+    const center = useMemo(() => ({ lat: 37.4800384, lng: -122.1558272 }), []);
     const options = useMemo(() => ({
         disableDefaultUI: true,
         clickableIcons: false
     }), [])
+
 
 
     const { isLoaded } = useLoadScript({
@@ -61,7 +63,8 @@ function Map(): React.MixedElement {
                             {location &&
                                 <Marker
                                     position={location}
-                                    icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
+                                    icon={'./icons/car-icon.png'}
+                                    title='You are here'
                                 />
                             }
                         </GoogleMap>
