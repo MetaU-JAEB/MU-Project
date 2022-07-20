@@ -5,19 +5,24 @@ import './Map.css';
 import { useCallback } from 'react';
 import { useRef } from 'react';
 import { useMemo } from 'react';
+import DriverLocation from '../DriverLocation/DriverLocation';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 
 
 
 function Map(): React.MixedElement {
 
+    const [location, setLocation] = useState({});
+
 
     const mapRef = useRef();
-    const center = useMemo( ()=>({ lat: 43, lng: -80 }),[] ) ;
+    const center = useMemo(() => ({ lat: 43, lng: -80 }), []);
     const options = useMemo(() => ({
         disableDefaultUI: true,
         clickableIcons: false
-    }),[])
+    }), [])
 
 
     const { isLoaded } = useLoadScript({
@@ -25,21 +30,36 @@ function Map(): React.MixedElement {
         libraries: ["places"]
     })
 
-    const onLoad = useCallback((map) => (mapRef.current = map) ,[])
+    useEffect(() => {
+        // TODO: Do something else when a new location is set by the user
+        // for the moment it is handled in the setLocation below
+    }, [location])
+
+    const onLoad = useCallback((map) => (mapRef.current = map), [])
 
     return <>
+
         {
             !isLoaded ? <p> Loading ...</p>
                 :
-                <div className="map">
-                    <GoogleMap
-                        zoom={10}
-                        center={center}
-                        mapContainerClassName='map-container'
-                        options={options}
-                        onLoad={onLoad}
-                    ></GoogleMap>
-                </div>
+                <>
+                    <DriverLocation
+                        setLocation={(position) => {
+                            setLocation(position);
+                            mapRef.current?.setZoom(15);
+                            mapRef.current?.panTo(position);
+                        }}
+                    ></DriverLocation>
+                    <div className="map">
+                        <GoogleMap
+                            zoom={10}
+                            center={center}
+                            mapContainerClassName='map-container'
+                            options={options}
+                            onLoad={onLoad}
+                        ></GoogleMap>
+                    </div>
+                </>
         }
     </>
 }
