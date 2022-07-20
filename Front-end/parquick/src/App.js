@@ -15,34 +15,36 @@ import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import type { User } from './types/User';
 import { testUser } from "./types/User";
-
+import { UserContext } from "./contexts/UserContext";
 
 
 
 function App(): React.MixedElement {
 
-  const [user, /* setUser */] = useState<User>(testUser);
+  const [user, setUser] = useState < User > (testUser);
 
-  useEffect(()=>{
+  useEffect(() => {
     // TODO: Fetch whatever that needs to be fetched at the begining
-  },[])
+  }, [])
 
   return (
     <div className="App">
-      <BrowserRouter>
-        <Navbar user={user}></Navbar>
-        <Routes>
-          <Route path="/" element={<Main user={user}/>} />
-          <Route path="Rented" element={<Rented  />} />
-          <Route path="AddParking" element={<AddParking  />} />
-          <Route path="Dashboard" element={<Dashboard  />} />
-          <Route path="LogOut" element={<LogOut />} />
-          <Route path="Login" element={<Login />} />
-          <Route path="Register" element={<Register />} />
-          <Route path="parking/:parkingId" element={<Parking  />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <UserContext.Provider value={{ user, setUser }} >
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Main user={user} />} />
+            <Route path="Rented" element={<Rented />} />
+            <Route path="AddParking" element={<AddParking />} />
+            <Route path="Dashboard" element={<Dashboard />} />
+            <Route path="LogOut" element={<LogOut />} />
+            <Route path="Login" element={<Login />} />
+            <Route path="Register" element={<Register />} />
+            <Route path="parking/:parkingId" element={<Parking />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </UserContext.Provider>
     </div>
   );
 }

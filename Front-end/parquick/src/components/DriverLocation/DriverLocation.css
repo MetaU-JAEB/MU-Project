@@ -1,0 +1,7 @@
+.btn-get-curr-locat:hover{
+    background-color: darkcyan;
+    cursor: pointer;
+}
+.btn-get-curr-locat:active{
+    background-color: white;
+}

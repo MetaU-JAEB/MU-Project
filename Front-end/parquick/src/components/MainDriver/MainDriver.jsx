@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react'
 import { useEffect, useState } from "react";
+import Map from '../Map/Map';
 import './MainDriver.css';
 
 function MainDriver(): React.MixedElement {
@@ -40,7 +41,7 @@ function MainDriver(): React.MixedElement {
             </div>
         </div>
         <div className="map">
-            <img src="images/map-example.png" alt="map" />
+            <Map/>
         </div>
     </>
 }
