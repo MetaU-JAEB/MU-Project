@@ -1,8 +1,11 @@
-// @flow
+//
 import * as React from 'react'
 import { useEffect, useState } from "react";
+import { useLoadScript } from '@react-google-maps/api'
 import Map from '../Map/Map';
 import './MainDriver.css';
+
+const librariesMaps = ["places"]
 
 function MainDriver(): React.MixedElement {
 
@@ -10,11 +13,16 @@ function MainDriver(): React.MixedElement {
     const [address, setAddress] = useState("");
     const [filter, setFilter] = useState("");
 
+    const { isLoaded } = useLoadScript({
+        googleMapsApiKey: process.env.REACT_APP_MAPS,
+        libraries: librariesMaps
+    })
+
     useEffect(() => {
-         // TODO: when the address changes, maps should recommend other parkings
+        // TODO: when the address changes, maps should recommend other parkings
     }, [address])
     useEffect(() => {
-         // TODO: display parkings based on the new filter requested
+        // TODO: display parkings based on the new filter requested
     }, [filter]);
 
 
@@ -28,7 +36,7 @@ function MainDriver(): React.MixedElement {
     return <>
         <div className="driver-search-address">
             <label htmlFor="driver-address"> Search</label>
-            <input type="text" name='driver-address' placeholder='Address' value={address} onChange={handleOnChangeAddress}/>
+            <input type="text" name='driver-address' placeholder='Address' value={address} onChange={handleOnChangeAddress} />
         </div>
         <div className="driver-filter-options">
             <div className="radio-filter">
@@ -41,7 +49,7 @@ function MainDriver(): React.MixedElement {
             </div>
         </div>
         <div className="map">
-            <Map/>
+            { isLoaded? <Map isLoaded={isLoaded}/> : <></>}
         </div>
     </>
 }

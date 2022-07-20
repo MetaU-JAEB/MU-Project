@@ -1,6 +1,6 @@
 //
 import * as React from 'react'
-import { GoogleMap, useLoadScript, Marker} from '@react-google-maps/api'
+import { GoogleMap, Marker} from '@react-google-maps/api'
 import './Map.css';
 import { useCallback } from 'react';
 import { useRef } from 'react';
@@ -13,7 +13,7 @@ import {MAP_DEFAULT_LOCATION} from '../../utils/constants'
 
 
 
-function Map(): React.MixedElement {
+function Map({isLoaded}): React.MixedElement {
 
 
     const [location, setLocation] = useState();
@@ -26,12 +26,6 @@ function Map(): React.MixedElement {
         clickableIcons: false
     }), [])
 
-
-
-    /* const { isLoaded } = useLoadScript({
-        googleMapsApiKey: process.env.REACT_APP_MAPS,
-        libraries: ["places"]
-    }) */
 
     useEffect(() => {
         // TODO: Do something else when a new location is set by the user

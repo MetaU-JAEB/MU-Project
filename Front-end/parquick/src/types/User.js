@@ -7,6 +7,6 @@ export type User = {
 
 export const testUser = {
     name:"Juan",
-    type:'owner',
+    type:'driver',
     logged: true
   }
