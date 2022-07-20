@@ -1,4 +1,4 @@
-//
+// @flow
 import * as React from 'react'
 import { GoogleMap, Marker} from '@react-google-maps/api'
 import './Map.css';
@@ -8,19 +8,23 @@ import { useMemo } from 'react';
 import DriverLocation from '../DriverLocation/DriverLocation';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import {MAP_DEFAULT_LOCATION} from '../../utils/constants'
+import { MAP_DEFAULT_LOCATION } from '../../utils/constants'
+import type { LatLngLiteral } from "../../types/LatLngLiteral";
+import { generateParkings } from "../../utils/testData";
+
+type Props = {
+    isLoaded: boolean
+}
 
 
+function Map({ isLoaded }: Props): React.MixedElement {
 
 
-function Map({isLoaded}): React.MixedElement {
-
-
-    const [location, setLocation] = useState();
+    const [location, setLocation] = useState < LatLngLiteral > ({});
 
 
     const mapRef = useRef();
-    const center = useMemo(() => ({ lat : MAP_DEFAULT_LOCATION.LAT, lng: MAP_DEFAULT_LOCATION.LNG }), []);
+    const center = useMemo(() => ({ lat: MAP_DEFAULT_LOCATION.LAT, lng: MAP_DEFAULT_LOCATION.LNG }), []);
     const options = useMemo(() => ({
         disableDefaultUI: true,
         clickableIcons: false
@@ -32,7 +36,8 @@ function Map({isLoaded}): React.MixedElement {
         // for the moment it is handled in the setLocation below
     }, [location])
 
-    const onLoad = useCallback((map) => (mapRef.current = map), [])
+    const onLoad = useCallback((map) => (mapRef.current = map), []);
+    const parkings = useMemo(() => generateParkings(location), [location]);
 
     return <>
 
@@ -55,12 +60,26 @@ function Map({isLoaded}): React.MixedElement {
                             options={options}
                             onLoad={onLoad}
                         >
-                            {location &&
+                            {location.lat && (<>
                                 <Marker
                                     position={location}
                                     icon={'./icons/car-icon.png'}
                                     title='You are here'
                                 />
+                                {
+
+
+                                    parkings.map((parking) => (
+                                        <Marker
+                                            key={parking.lat}
+                                            position={parking}
+                                            title='parking'
+                                        />
+                                    ))
+                                }
+
+                            </>)
+
                             }
                         </GoogleMap>
                     </div>
@@ -68,5 +87,8 @@ function Map({isLoaded}): React.MixedElement {
         }
     </>
 }
+
+
+
 
 export default Map;
