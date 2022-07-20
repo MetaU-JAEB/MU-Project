@@ -41,7 +41,7 @@ function MainDriver(): React.MixedElement {
             </div>
         </div>
         <div className="map">
-            <Map></Map>
+            <Map/>
         </div>
     </>
 }

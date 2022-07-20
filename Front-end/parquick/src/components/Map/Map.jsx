@@ -8,6 +8,7 @@ import { useMemo } from 'react';
 import DriverLocation from '../DriverLocation/DriverLocation';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import {MAP_DEFAULT_LOCATION} from '../../utils/constants'
 
 
 
@@ -19,7 +20,7 @@ function Map(): React.MixedElement {
 
 
     const mapRef = useRef();
-    const center = useMemo(() => ({ lat: 37.4800384, lng: -122.1558272 }), []);
+    const center = useMemo(() => ({ lat : MAP_DEFAULT_LOCATION.LAT, lng: MAP_DEFAULT_LOCATION.LNG }), []);
     const options = useMemo(() => ({
         disableDefaultUI: true,
         clickableIcons: false
@@ -27,10 +28,10 @@ function Map(): React.MixedElement {
 
 
 
-    const { isLoaded } = useLoadScript({
+    /* const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_MAPS,
         libraries: ["places"]
-    })
+    }) */
 
     useEffect(() => {
         // TODO: Do something else when a new location is set by the user
@@ -51,7 +52,7 @@ function Map(): React.MixedElement {
                             mapRef.current?.setZoom(15);
                             mapRef.current?.panTo(position);
                         }}
-                    ></DriverLocation>
+                    />
                     <div className="map">
                         <GoogleMap
                             zoom={10}

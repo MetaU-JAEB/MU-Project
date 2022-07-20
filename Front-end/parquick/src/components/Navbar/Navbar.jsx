@@ -1,14 +1,13 @@
 // @flow
 import * as React from 'react'
-import { useContext } from "react";
 import { Link } from 'react-router-dom';
-import { userContext } from '../../contexts/UserContext';
+import { useUser } from '../../contexts/UserContext';
 import './Navbar.css';
 
 
 
 function Navbar(): React.MixedElement {
-    const {user} = useContext(userContext);
+    const {user} = useUser();
 
     // TODO: use redux, Context or Local storage to save user data and
     // display info according to user type

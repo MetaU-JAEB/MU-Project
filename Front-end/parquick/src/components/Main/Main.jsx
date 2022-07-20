@@ -14,11 +14,11 @@ function Main({user} : Props): React.MixedElement {
         {
             user.type === "owner" ?
             <>
-                <MainOwner></MainOwner>
+                <MainOwner/>
             </>
             : user.type === "driver" ?
             <>
-                <MainDriver></MainDriver>
+                <MainDriver/>
             </>
             :
             <></>

@@ -34,7 +34,32 @@ function DriverLocation({ setLocation }): React.MixedElement {
         setLocation({ lat, lng });
     };
 
+
+    const handleGetCurrentLocation = () => {
+        const options = {
+            enableHighAccuracy: false,
+            timeout: 5000,
+            maximumAge: 0
+        };
+
+        function success(pos) {
+            const crd = pos.coords;
+            const lat = crd.latitude;
+            const lng = crd.longitude
+            setLocation({ lat, lng })
+        }
+
+        function error(err) {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+        }
+
+        navigator.geolocation.getCurrentPosition(success, error, options);
+    }
+
     return <>
+        <div className="current-location">
+            <button onClick={handleGetCurrentLocation} className='btn-get-curr-locat'>Use current Location</button>
+        </div>
         <div className="driver-search-location">
             <label htmlFor="driver-location"> Search</label>
             <Combobox onSelect={handleSelect}>

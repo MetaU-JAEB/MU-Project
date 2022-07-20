@@ -1,12 +1,12 @@
 // @flow
 import * as React from 'react'
-import { useContext, useEffect } from "react";
-import { userContext } from '../../contexts/UserContext';
+import { useEffect } from "react";
+import { useUser } from '../../contexts/UserContext';
 import './LogOut.css';
 import { useNavigate } from "react-router-dom";
 
 function LogOut () : React.MixedElement {
-    const {setUser} = useContext(userContext);
+    const {setUser} = useUser();
     const navigate = useNavigate();
 
     function logout () {

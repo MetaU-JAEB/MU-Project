@@ -15,7 +15,7 @@ import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import type { User } from './types/User';
 import { testUser } from "./types/User";
-import { userContext } from "./contexts/UserContext";
+import { UserContext } from "./contexts/UserContext";
 
 
 
@@ -29,9 +29,9 @@ function App(): React.MixedElement {
 
   return (
     <div className="App">
-      <userContext.Provider value={{ user, setUser }} >
+      <UserContext.Provider value={{ user, setUser }} >
         <BrowserRouter>
-          <Navbar ></Navbar>
+          <Navbar />
           <Routes>
             <Route path="/" element={<Main user={user} />} />
             <Route path="Rented" element={<Rented />} />
@@ -44,7 +44,7 @@ function App(): React.MixedElement {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
-      </userContext.Provider>
+      </UserContext.Provider>
     </div>
   );
 }
