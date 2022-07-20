@@ -34,7 +34,8 @@ function DriverLocation({ setLocation }): React.MixedElement {
         setLocation({ lat, lng });
     };
 
-
+    // Function to handle on click and get user location
+    // Enabling High Accuracy took more time to fetch
     const handleGetCurrentLocation = () => {
         const options = {
             enableHighAccuracy: false,
