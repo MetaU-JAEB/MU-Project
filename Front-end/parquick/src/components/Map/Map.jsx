@@ -1,6 +1,6 @@
 //
 import * as React from 'react'
-import { GoogleMap, useLoadScript } from '@react-google-maps/api'
+import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api'
 import './Map.css';
 import { useCallback } from 'react';
 import { useRef } from 'react';
@@ -57,7 +57,14 @@ function Map(): React.MixedElement {
                             mapContainerClassName='map-container'
                             options={options}
                             onLoad={onLoad}
-                        ></GoogleMap>
+                        >
+                            {location &&
+                                <Marker
+                                    position={location}
+                                    icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
+                                />
+                            }
+                        </GoogleMap>
                     </div>
                 </>
         }
