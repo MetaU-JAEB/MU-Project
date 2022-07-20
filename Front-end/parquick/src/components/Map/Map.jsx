@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react'
-import { GoogleMap, Marker} from '@react-google-maps/api'
+import { GoogleMap, Marker, MarkerClusterer } from '@react-google-maps/api'
 import './Map.css';
 import { useCallback } from 'react';
 import { useRef } from 'react';
@@ -68,14 +68,19 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                 />
                                 {
 
+                                    <MarkerClusterer>
+                                        {(clusterer) =>
 
-                                    parkings.map((parking) => (
-                                        <Marker
-                                            key={parking.lat}
-                                            position={parking}
-                                            title='parking'
-                                        />
-                                    ))
+                                            parkings.map((parking) => (
+                                                <Marker
+                                                    key={parking.lat}
+                                                    position={parking}
+                                                    clusterer={clusterer}
+                                                    title='parking'
+                                                />
+                                            ))
+                                        }
+                                    </MarkerClusterer>
                                 }
 
                             </>)
