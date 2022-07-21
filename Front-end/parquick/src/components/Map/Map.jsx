@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 import DriverLocation from '../DriverLocation/DriverLocation';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { MAP_CIRCLES_DISTANCES, MAP_DEFAULT_LOCATION } from '../../utils/constants'
+import { MAP_CIRCLES_DISTANCES, MAP_DEFAULT_LOCATION, MAP_ZOOM } from '../../utils/constants'
 import { generateParkings } from "../../utils/testData";
 import type { LatLngLiteral } from "../../types/LatLngLiteral";
 import { mapsStyleOptions } from "../../utils/mapsStyleOptions";
@@ -74,13 +74,13 @@ function Map({ isLoaded }: Props): React.MixedElement {
                     <DriverLocation
                         setLocation={(position) => {
                             setLocation(position);
-                            mapRef.current?.setZoom(14);
+                            mapRef.current?.setZoom(MAP_ZOOM.NEIGHBORHOOD);
                             mapRef.current?.panTo(position);
                         }}
                     />
                     <div className="map">
                         <GoogleMap
-                            zoom={10}
+                            zoom={MAP_ZOOM.CITY}
                             center={center}
                             mapContainerClassName='map-container'
                             options={options}
