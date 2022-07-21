@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 import DriverLocation from '../DriverLocation/DriverLocation';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { MAP_DEFAULT_LOCATION } from '../../utils/constants'
+import { MAP_CIRCLES_DISTANCES, MAP_DEFAULT_LOCATION } from '../../utils/constants'
 import { generateParkings } from "../../utils/testData";
 import type { LatLngLiteral } from "../../types/LatLngLiteral";
 import { mapsStyleOptions } from "../../utils/mapsStyleOptions";
@@ -124,9 +124,9 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                         }
                                     </MarkerClusterer>
                                 }
-                                <Circle center={location} radius={300} options={mapsStyleOptions.closeOptions} />
-                                <Circle center={location} radius={600} options={mapsStyleOptions.middleOptions} />
-                                <Circle center={location} radius={900} options={mapsStyleOptions.farOptions} />
+                                <Circle center={location} radius={MAP_CIRCLES_DISTANCES.CLOSE} options={mapsStyleOptions.closeOptions} />
+                                <Circle center={location} radius={MAP_CIRCLES_DISTANCES.MIDDLE} options={mapsStyleOptions.middleOptions} />
+                                <Circle center={location} radius={MAP_CIRCLES_DISTANCES.FAR} options={mapsStyleOptions.farOptions} />
 
                             </>)
 
