@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react'
-import { GoogleMap, Marker, MarkerClusterer, DirectionsRenderer} from '@react-google-maps/api'
+import { GoogleMap, Marker, MarkerClusterer, DirectionsRenderer, Circle} from '@react-google-maps/api'
 import './Map.css';
 import { useCallback } from 'react';
 import { useRef } from 'react';
@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { MAP_DEFAULT_LOCATION } from '../../utils/constants'
 import { generateParkings } from "../../utils/testData";
 import type { LatLngLiteral } from "../../types/LatLngLiteral";
+import { mapsStyleOptions } from "../../utils/mapsStyleOptions";
 
 type Props = {
     isLoaded: boolean
@@ -123,6 +124,9 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                         }
                                     </MarkerClusterer>
                                 }
+                                <Circle center={location} radius={300} options={mapsStyleOptions.closeOptions} />
+                                <Circle center={location} radius={600} options={mapsStyleOptions.middleOptions} />
+                                <Circle center={location} radius={900} options={mapsStyleOptions.farOptions} />
 
                             </>)
 
