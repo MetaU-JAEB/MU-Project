@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react'
-import { GoogleMap, Marker, MarkerClusterer } from '@react-google-maps/api'
+import { GoogleMap, Marker, MarkerClusterer, DirectionsRenderer} from '@react-google-maps/api'
 import './Map.css';
 import { useCallback } from 'react';
 import { useRef } from 'react';
@@ -9,18 +9,18 @@ import DriverLocation from '../DriverLocation/DriverLocation';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { MAP_DEFAULT_LOCATION } from '../../utils/constants'
-import type { LatLngLiteral } from "../../types/LatLngLiteral";
 import { generateParkings } from "../../utils/testData";
+import type { LatLngLiteral } from "../../types/LatLngLiteral";
 
 type Props = {
     isLoaded: boolean
 }
 
-
 function Map({ isLoaded }: Props): React.MixedElement {
 
 
-    const [location, setLocation] = useState < LatLngLiteral > ({});
+    const [location, setLocation] = useState < any > (null);
+    const [directions, setDirections] = useState < any > (null);
 
 
     const mapRef = useRef();
@@ -33,11 +33,36 @@ function Map({ isLoaded }: Props): React.MixedElement {
 
     useEffect(() => {
         // TODO: Do something else when a new location is set by the user
-        // for the moment it is handled in the setLocation below
+        // for the moment it is handled in the setLocation inside DriverLocation component
     }, [location])
+
+    useEffect(() => {
+        // TODO: Display more info about how to go from X to Y location
+    }, [directions])
 
     const onLoad = useCallback((map) => (mapRef.current = map), []);
     const parkings = useMemo(() => generateParkings(location), [location]);
+
+    const fetchDirections = (parking: LatLngLiteral) => {
+        if (!location) return;
+
+        const service = new window.google.maps.DirectionsService();
+        // TO FIX: After rendering a route, th eprevious one remains
+        // Maybe I should use useRef for the renderer
+        service.route(
+            {
+                origin: location,
+                destination: parking,
+                travelMode: window.google.maps.TravelMode.DRIVING,
+            },
+            (result, status) => {
+                if (status === "OK" && result) {
+                    // TO FIX: something like DirectionRendererRef.current?.setDirections(result)
+                    setDirections(result);
+                }
+            }
+        );
+    };
 
     return <>
 
@@ -48,7 +73,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
                     <DriverLocation
                         setLocation={(position) => {
                             setLocation(position);
-                            mapRef.current?.setZoom(15);
+                            mapRef.current?.setZoom(14);
                             mapRef.current?.panTo(position);
                         }}
                     />
@@ -60,8 +85,21 @@ function Map({ isLoaded }: Props): React.MixedElement {
                             options={options}
                             onLoad={onLoad}
                         >
-                            {location.lat && (<>
+                            {directions && (
+                                <DirectionsRenderer
+                                    directions={directions}
+                                    options={{
+                                        polylineOptions: {
+                                            zIndex: 50,
+                                            strokeColor: "#1976D2",
+                                            strokeWeight: 5,
+                                        },
+                                    }}
+                                />
+                            )}
+                            {location && (<>
                                 <Marker
+                                    zIndex={15}
                                     position={location}
                                     icon={'./icons/car-icon.png'}
                                     title='You are here'
@@ -77,6 +115,9 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                                     position={parking}
                                                     clusterer={clusterer}
                                                     title='parking'
+                                                    onClick={() => {
+                                                        fetchDirections(parking);
+                                                    }}
                                                 />
                                             ))
                                         }
