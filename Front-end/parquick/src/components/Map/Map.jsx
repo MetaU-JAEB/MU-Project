@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react'
-import { GoogleMap, Marker, MarkerClusterer, DirectionsRenderer, Circle} from '@react-google-maps/api'
+import { GoogleMap, MarkerF, MarkerClusterer, DirectionsRenderer, Circle } from '@react-google-maps/api'
 import './Map.css';
 import { useCallback } from 'react';
 import { useRef } from 'react';
@@ -28,7 +28,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
     const center = useMemo(() => ({ lat: MAP_DEFAULT_LOCATION.LAT, lng: MAP_DEFAULT_LOCATION.LNG }), []);
     const options = useMemo(() => ({
         disableDefaultUI: true,
-        clickableIcons: false
+        clickableIcons: false,
     }), [])
 
 
@@ -48,6 +48,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
         if (!location) return;
 
         const service = new window.google.maps.DirectionsService();
+
         // TO FIX: After rendering a route, th eprevious one remains
         // Maybe I should use useRef for the renderer
         service.route(
@@ -99,31 +100,31 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                 />
                             )}
                             {location && (<>
-                                <Marker
+                                <MarkerF
                                     zIndex={15}
                                     position={location}
                                     icon={'./icons/car-icon.png'}
                                     title='You are here'
                                 />
-                                {
 
-                                    <MarkerClusterer>
-                                        {(clusterer) =>
 
-                                            parkings.map((parking) => (
-                                                <Marker
-                                                    key={parking.lat}
-                                                    position={parking}
-                                                    clusterer={clusterer}
-                                                    title='parking'
-                                                    onClick={() => {
-                                                        fetchDirections(parking);
-                                                    }}
-                                                />
-                                            ))
-                                        }
-                                    </MarkerClusterer>
-                                }
+                                <MarkerClusterer>
+                                    {(clusterer) =>
+
+                                        parkings.map((parking) => (
+                                            <MarkerF
+                                                key={parking.lat}
+                                                position={parking}
+                                                clusterer={clusterer}
+                                                title='parking'
+                                                onClick={() => {
+                                                    fetchDirections(parking);
+                                                }}
+                                            />
+                                        ))
+                                    }
+                                </MarkerClusterer>
+
                                 <Circle center={location} radius={MAP_CIRCLES_DISTANCES.CLOSE} options={mapsStyleOptions.closeOptions} />
                                 <Circle center={location} radius={MAP_CIRCLES_DISTANCES.MIDDLE} options={mapsStyleOptions.middleOptions} />
                                 <Circle center={location} radius={MAP_CIRCLES_DISTANCES.FAR} options={mapsStyleOptions.farOptions} />
