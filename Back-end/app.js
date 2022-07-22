@@ -1,16 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { ApolloServer } = require('apollo-server-express');
-// const schema = require('./schema/schemaDiscriminatorWithRelations');
+const schema = require('./schema/schema');
 
-/// GATTING THE DB URL
+/// GETTING THE DB URL
 const mongoURL = process.env.MONGO;
 
-mongoose.connect(mongoURL);
-mongoose.connection.once('open', () => {
-  // eslint-disable-next-line no-console
-  console.log('Connected to databasee');
-});
+// mongoose.connect(mongoURL);
+// mongoose.connection.once('open', () => {
+//   // eslint-disable-next-line no-console
+//   console.log('Connected to databasee');
+// });
 
 const app = express();
 
