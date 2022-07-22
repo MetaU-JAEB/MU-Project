@@ -22,7 +22,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
 
 
     const [location, setLocation] = useState < any > (null);
-    // const [directions, setDirections] = useState < any > (null);
+    const [directions, setDirections] = useState < any > ();
     const [Direcciones, setDirecciones] = useState < React.MixedElement > (<></>);
     const [circles, setCircles] = useState < React.MixedElement > (<></>);
 
@@ -50,9 +50,20 @@ function Map({ isLoaded }: Props): React.MixedElement {
 
     }, [location])
 
-    // useEffect(() => {
-    //     // TODO: Display more info about how to go from X to Y location
-    // }, [directions])
+    useEffect(() => {
+        // TODO: Display more info about how to go from X to Y location
+        setDirecciones(
+            <DirectionsRenderer
+                directions={directions}
+                options={{
+                    polylineOptions: {
+                        zIndex: 50,
+                        strokeColor: "#1976D2",
+                        strokeWeight: 5,
+                    },
+                }}
+            />)
+    }, [directions])
 
     const onLoad = useCallback((map) => (mapRef.current = map), []);
     const parkings = useMemo(() => generateParkings(location), [location]);
@@ -73,18 +84,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
             (result, status) => {
                 if (status === "OK" && result) {
                     // TO FIX: something like DirectionRendererRef.current?.setDirections(result)
-                    //setDirections(result);
-                    setDirecciones(
-                        <DirectionsRenderer
-                            directions={result}
-                            options={{
-                                polylineOptions: {
-                                    zIndex: 50,
-                                    strokeColor: "#1976D2",
-                                    strokeWeight: 5,
-                                },
-                            }}
-                        />)
+                    setDirections(result);
                 }
             }
         );
