@@ -126,7 +126,7 @@ const DriverTC = UserDTC.discriminator(DriverModel, driverTypeConverterOptions);
 const OwnerTC = UserDTC.discriminator(OwnerModel);
 // baseOptions -> customizationsOptions applied
 
-// console.log('Resolvers',DriverTC.getResolvers())
+// Owner relations
 OwnerTC.addRelation(
     'parkings',
     {
@@ -153,6 +153,22 @@ OwnerTC.addRelation(
     },
 );
 
+/// Driver Relations
+DriverTC.addRelation(
+    'rents',
+    {
+        resolver: () => RentTC.getResolver('findMany'),
+        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+            filter: (driver) => ({
+                driverId: driver._id
+            })
+        },
+        projection: { _id: 1 }, // required fields from Driver object, 1=true
+    },
+);
+
+
+//Parking Relations
 ParkingTC.addRelation(
     'owner',
     {
@@ -166,6 +182,20 @@ ParkingTC.addRelation(
     },
 );
 
+ParkingTC.addRelation(
+    'rents',
+    {
+        resolver: () => RentTC.getResolver('findMany'),
+        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+            filter: (parking) => ({
+                parkingId: parking._id
+            })
+        },
+        projection: { _id: 1 }, // required fields from Parking object, 1=true
+    },
+);
+
+//Rent relations
 RentTC.addRelation(
     'parking',
     {
@@ -191,6 +221,7 @@ RentTC.addRelation(
         projection: { driverId: 1 }, // required fields from Rent object, 1=true
     },
 );
+
 // You may now use UserDTC to add fields to all Discriminators
 schemaComposer.Query.addFields({
     driverMany: DriverTC.getResolver('findMany'),
