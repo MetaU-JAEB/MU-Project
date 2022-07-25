@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { composeWithMongooseDiscriminators } = require('graphql-compose-mongoose');
+const { composeWithMongooseDiscriminators, composeWithMongoose, composeMongoose } = require('graphql-compose-mongoose');
 const { schemaComposer } = require('graphql-compose');
 
 
@@ -43,7 +43,7 @@ const Parking = mongoose.Schema({
     ubication: Ubication,
     price: Number,
     dimensions : Dimensions,
-    isUnderShade: Number,
+    isUnderShade: Number, // to boolean and null if don't know
     isInside: Number,
     isWorking: Number
     totalLots: Number,
@@ -79,7 +79,7 @@ const User = new mongoose.Schema({
 
 // DEFINE DISCRIMINATOR SCHEMAS
 const Driver = new mongoose.Schema({
-    cars: [Car],
+    cars: [Car]
 });
 
 const Owner = new mongoose.Schema({
@@ -91,6 +91,8 @@ User.set('discriminatorKey', DKey);
 
 // create base Model
 const UserModel = mongoose.model('User', User);
+const ParkingModel = mongoose.model('Parking', Parking);
+const RentModel = mongoose.model('Rent', Rent);
 
 // create mongoose discriminator models
 const DriverModel = UserModel.discriminator(enumUserType.DRIVER, Driver);
@@ -103,6 +105,13 @@ const baseOptions = { // regular TypeConverterOptions, passed to composeMongoose
     //     remove: ['parkings'],
     // },
 };
+
+// Type Composers
+const ParkingTC = composeWithMongoose(ParkingModel);
+const RentTC = composeWithMongoose(RentModel);
+
+
+// Discriminator Type Composers
 const UserDTC = composeWithMongooseDiscriminators(UserModel, baseOptions);
 
 // create Discriminator Types
@@ -121,7 +130,7 @@ const OwnerTC = UserDTC.discriminator(OwnerModel);
 OwnerTC.addRelation(
     'parkings',
     {
-        resolver: () => OwnerTC.getResolver('findByIds'),
+        resolver: () => ParkingTC.getResolver('findByIds'),
         prepareArgs: { // resolver `findByIds` has `_ids` arg, let provide value to it
             _ids: (source) => source.parkingsIds,
         },
@@ -131,7 +140,7 @@ OwnerTC.addRelation(
 OwnerTC.addRelation(
     'parkingsWithShade',
     {
-        resolver: () => OwnerTC.getResolver('findMany'),
+        resolver: () => ParkingTC.getResolver('findMany'),
         prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
             filter: (source) => ({
                 _operators: { // Applying criteria on fields which have
@@ -141,10 +150,9 @@ OwnerTC.addRelation(
                 }
             })
         },
-        projection: { parkingsIds: 1 }, // required fields from source object
+        projection: { parkingsIds: 1 }, // required fields from source object, 1=true
     },
 );
-
 // You may now use UserDTC to add fields to all Discriminators
 schemaComposer.Query.addFields({
     driverMany: DriverTC.getResolver('findMany'),
