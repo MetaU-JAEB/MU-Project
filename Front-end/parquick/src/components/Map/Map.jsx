@@ -17,11 +17,14 @@ type Props = {
     isLoaded: boolean
 }
 
+
 function Map({ isLoaded }: Props): React.MixedElement {
 
 
     const [location, setLocation] = useState < any > (null);
-    const [directions, setDirections] = useState < any > (null);
+    const [directions, setDirections] = useState < any > ();
+    const [Direcciones, setDirecciones] = useState < React.MixedElement > (<></>);
+    const [circles, setCircles] = useState < React.MixedElement > (<></>);
 
 
     const mapRef = useRef();
@@ -35,10 +38,31 @@ function Map({ isLoaded }: Props): React.MixedElement {
     useEffect(() => {
         // TODO: Do something else when a new location is set by the user
         // for the moment it is handled in the setLocation inside DriverLocation component
+
+        mapRef.current?.setZoom(MAP_ZOOM.NEIGHBORHOOD);
+        mapRef.current?.panTo(location);
+
+        setCircles(<>
+            <Circle center={location} radius={MAP_CIRCLES_DISTANCES.CLOSE} options={mapsStyleOptions.closeOptions} />
+            <Circle center={location} radius={MAP_CIRCLES_DISTANCES.MIDDLE} options={mapsStyleOptions.middleOptions} />
+            <Circle center={location} radius={MAP_CIRCLES_DISTANCES.FAR} options={mapsStyleOptions.farOptions} />
+        </>);
+
     }, [location])
 
     useEffect(() => {
         // TODO: Display more info about how to go from X to Y location
+        setDirecciones(
+            <DirectionsRenderer
+                directions={directions}
+                options={{
+                    polylineOptions: {
+                        zIndex: 50,
+                        strokeColor: "#1976D2",
+                        strokeWeight: 5,
+                    },
+                }}
+            />)
     }, [directions])
 
     const onLoad = useCallback((map) => (mapRef.current = map), []);
@@ -75,8 +99,6 @@ function Map({ isLoaded }: Props): React.MixedElement {
                     <DriverLocation
                         setLocation={(position) => {
                             setLocation(position);
-                            mapRef.current?.setZoom(MAP_ZOOM.NEIGHBORHOOD);
-                            mapRef.current?.panTo(position);
                         }}
                     />
                     <div className="map">
@@ -87,18 +109,9 @@ function Map({ isLoaded }: Props): React.MixedElement {
                             options={options}
                             onLoad={onLoad}
                         >
-                            {directions && (
-                                <DirectionsRenderer
-                                    directions={directions}
-                                    options={{
-                                        polylineOptions: {
-                                            zIndex: 50,
-                                            strokeColor: "#1976D2",
-                                            strokeWeight: 5,
-                                        },
-                                    }}
-                                />
-                            )}
+                            {
+                                Direcciones
+                            }
                             {location && (<>
                                 <MarkerF
                                     zIndex={15}
@@ -124,10 +137,10 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                         ))
                                     }
                                 </MarkerClusterer>
+                                {
+                                    circles
+                                }
 
-                                <Circle center={location} radius={MAP_CIRCLES_DISTANCES.CLOSE} options={mapsStyleOptions.closeOptions} />
-                                <Circle center={location} radius={MAP_CIRCLES_DISTANCES.MIDDLE} options={mapsStyleOptions.middleOptions} />
-                                <Circle center={location} radius={MAP_CIRCLES_DISTANCES.FAR} options={mapsStyleOptions.farOptions} />
 
                             </>)
 
