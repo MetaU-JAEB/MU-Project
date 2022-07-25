@@ -48,14 +48,14 @@ const Parking = mongoose.Schema({
     isWorking: Number,
     totalLots: Number,
     availableLots: Number
-});
+},{ timestamps: true });
 
 const Rent = mongoose.Schema({
     parkingId: mongoose.Schema.Types.ObjectId,
     driverId: mongoose.Schema.Types.ObjectId,
     startAt: mongoose.Schema.Types.Date,
     endsAt: mongoose.Schema.Types.Date
-});
+},{ timestamps: true });
 
 
 // DEFINE USER SCHEMAS
@@ -75,7 +75,7 @@ const User = new mongoose.Schema({
     phone: String,
     address: String,
     cards: [BankCard]
-});
+},{ timestamps: true });
 
 // DEFINE DISCRIMINATOR SCHEMAS
 const Driver = new mongoose.Schema({
