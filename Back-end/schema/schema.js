@@ -170,11 +170,11 @@ schemaComposer.Mutation.addFields({
     parkingCreate : ParkingTC.getResolver('createOne'),
     rentCreate : RentTC.getResolver('createOne'),
 
-    driverCreate: DriverTC.getResolver('createOne'),
-    ownerCreate: OwnerTC.getResolver('createOne'),
-    userCreate: UserDTC.getResolver('createOne'),
-    parkingCreate : ParkingTC.getResolver('createOne'),
-    rentCreate : RentTC.getResolver('createOne'),
+    driverUpdate: DriverTC.getResolver('updateOne'),
+    ownerUpdate: OwnerTC.getResolver('updateOne'),
+    userUpdate: UserDTC.getResolver('updateOne'),
+    parkingUpdate : ParkingTC.getResolver('updateOne'),
+    rentUpdate : RentTC.getResolver('updateOne'),
 
 });
 
