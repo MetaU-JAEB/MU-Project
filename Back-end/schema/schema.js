@@ -165,6 +165,19 @@ ParkingTC.addRelation(
         projection: { ownerId: 1 }, // required fields from Parking object, 1=true
     },
 );
+
+RentTC.addRelation(
+    'parking',
+    {
+        resolver: () => ParkingTC.getResolver('findOne'),
+        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+            filter: (rent) => ({
+                _id: rent.parkingId
+            })
+        },
+        projection: { parkingId: 1 }, // required fields from Rent object, 1=true
+    },
+);
 // You may now use UserDTC to add fields to all Discriminators
 schemaComposer.Query.addFields({
     driverMany: DriverTC.getResolver('findMany'),
