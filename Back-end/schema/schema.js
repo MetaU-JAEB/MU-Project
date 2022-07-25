@@ -25,7 +25,7 @@ const Dimensions = mongoose.Schema({
 }, { _id: false });
 
 const Car = mongoose.Schema({
-    dimensions : Dimensions,
+    dimensions: Dimensions,
     plates: String
 }, { _id: false });
 
@@ -42,7 +42,7 @@ const Parking = mongoose.Schema({
     images: [String],
     ubication: Ubication,
     price: Number,
-    dimensions : Dimensions,
+    dimensions: Dimensions,
     isUnderShade: Number, // to boolean and null if don't know
     isInside: Number,
     isWorking: Number,
@@ -53,8 +53,8 @@ const Parking = mongoose.Schema({
 const Rent = mongoose.Schema({
     parkingId: mongoose.Schema.Types.ObjectId,
     driverId: mongoose.Schema.Types.ObjectId,
-    startAt : mongoose.Schema.Types.Date,
-    endsAt : mongoose.Schema.Types.Date
+    startAt: mongoose.Schema.Types.Date,
+    endsAt: mongoose.Schema.Types.Date
 });
 
 
@@ -130,11 +130,13 @@ const OwnerTC = UserDTC.discriminator(OwnerModel);
 OwnerTC.addRelation(
     'parkings',
     {
-        resolver: () => ParkingTC.getResolver('findByIds'),
-        prepareArgs: { // resolver `findByIds` has `_ids` arg, let provide value to it
-            _ids: (source) => source.parkingsIds,
+        resolver: () => ParkingTC.getResolver('findMany'),
+        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+            filter: (owner) => ({
+                ownerId: owner._id,
+            })
         },
-        projection: { parkingsIds: 1 }, // point fields in source object, which should be fetched from DB
+        projection: { _id: 1 }, // required fields from Owner object, 1=true
     },
 );
 OwnerTC.addRelation(
@@ -142,15 +144,12 @@ OwnerTC.addRelation(
     {
         resolver: () => ParkingTC.getResolver('findMany'),
         prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
-            filter: (source) => ({
-                _operators: { // Applying criteria on fields which have
-                    // operators enabled for them (by default, indexed fields only)
-                    _id: { in: source.parkingsIds },
-                    isUnderShade: 1,
-                }
+            filter: (owner) => ({
+                ownerId: owner._id,
+                isUnderShade: 1
             })
         },
-        projection: { parkingsIds: 1 }, // required fields from source object, 1=true
+        projection: { _id: 1 }, // required fields from Owner object, 1=true
     },
 );
 // You may now use UserDTC to add fields to all Discriminators
@@ -158,8 +157,8 @@ schemaComposer.Query.addFields({
     driverMany: DriverTC.getResolver('findMany'),
     ownerMany: OwnerTC.getResolver('findMany'),
     userMany: UserDTC.getResolver('findMany'),
-    parkingMany : ParkingTC.getResolver('findMany'),
-    rentMany : RentTC.getResolver('findMany'),
+    parkingMany: ParkingTC.getResolver('findMany'),
+    rentMany: RentTC.getResolver('findMany'),
 
 });
 // Use DriverTC, `OwnerTC as any other ObjectTypeComposer.
@@ -167,14 +166,14 @@ schemaComposer.Mutation.addFields({
     driverCreate: DriverTC.getResolver('createOne'),
     ownerCreate: OwnerTC.getResolver('createOne'),
     userCreate: UserDTC.getResolver('createOne'),
-    parkingCreate : ParkingTC.getResolver('createOne'),
-    rentCreate : RentTC.getResolver('createOne'),
+    parkingCreate: ParkingTC.getResolver('createOne'),
+    rentCreate: RentTC.getResolver('createOne'),
 
     driverUpdate: DriverTC.getResolver('updateOne'),
     ownerUpdate: OwnerTC.getResolver('updateOne'),
     userUpdate: UserDTC.getResolver('updateOne'),
-    parkingUpdate : ParkingTC.getResolver('updateOne'),
-    rentUpdate : RentTC.getResolver('updateOne'),
+    parkingUpdate: ParkingTC.getResolver('updateOne'),
+    rentUpdate: RentTC.getResolver('updateOne'),
 
 });
 
