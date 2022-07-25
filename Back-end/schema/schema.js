@@ -25,7 +25,7 @@ const Dimensions = mongoose.Schema({
 }, { _id: false });
 
 const Car = mongoose.Schema({
-    dimensions : Dimensions
+    dimensions : Dimensions,
     plates: String
 }, { _id: false });
 
@@ -45,7 +45,7 @@ const Parking = mongoose.Schema({
     dimensions : Dimensions,
     isUnderShade: Number, // to boolean and null if don't know
     isInside: Number,
-    isWorking: Number
+    isWorking: Number,
     totalLots: Number,
     availableLots: Number
 });
@@ -156,15 +156,26 @@ OwnerTC.addRelation(
 // You may now use UserDTC to add fields to all Discriminators
 schemaComposer.Query.addFields({
     driverMany: DriverTC.getResolver('findMany'),
-    personMany: OwnerTC.getResolver('findMany'),
+    ownerMany: OwnerTC.getResolver('findMany'),
     userMany: UserDTC.getResolver('findMany'),
+    parkingMany : ParkingTC.getResolver('findMany'),
+    rentMany : RentTC.getResolver('findMany'),
 
 });
 // Use DriverTC, `OwnerTC as any other ObjectTypeComposer.
 schemaComposer.Mutation.addFields({
     driverCreate: DriverTC.getResolver('createOne'),
-    personCreate: OwnerTC.getResolver('createOne'),
+    ownerCreate: OwnerTC.getResolver('createOne'),
     userCreate: UserDTC.getResolver('createOne'),
+    parkingCreate : ParkingTC.getResolver('createOne'),
+    rentCreate : RentTC.getResolver('createOne'),
+
+    driverCreate: DriverTC.getResolver('createOne'),
+    ownerCreate: OwnerTC.getResolver('createOne'),
+    userCreate: UserDTC.getResolver('createOne'),
+    parkingCreate : ParkingTC.getResolver('createOne'),
+    rentCreate : RentTC.getResolver('createOne'),
+
 });
 
 const schema = schemaComposer.buildSchema();
@@ -182,7 +193,7 @@ const schema = schemaComposer.buildSchema();
                             modelNumber
                             }
                         }
-                        personCreate(record: {name: "mernxl", dob: 57275272}) {
+                        ownerCreate(record: {name: "mernxl", dob: 57275272}) {
                             record {
                             __typename
                             type
@@ -198,7 +209,7 @@ const schema = schemaComposer.buildSchema();
                     record: { __typename: 'Driver', type: 'Driver',
                      name: 'Queue XL', modelNumber: 360 },
                 },
-                personCreate: {
+                ownerCreate: {
                     record: { __typename: 'Owner', type: 'Owner', name: 'mernxl', dob: 57275272 },
                 },
             },
