@@ -49,7 +49,7 @@ function MainDriver(): React.MixedElement {
             </div>
         </div>
         <div className="map">
-            { isLoaded? <Map isLoaded={isLoaded}/> : <></>}
+            { isLoaded && <Map isLoaded/>}
         </div>
     </>
 }
