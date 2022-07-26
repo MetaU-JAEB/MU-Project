@@ -1,24 +1,25 @@
-//
+// @flow
 import * as React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 import ParkingCard from '../ParkingCard/ParkingCard';
 import './MainOwner.css';
+import { GET_LOCATIONS } from '../../queries/locationQueries';
 
-const testParkings = [1,2,3,4,5,6,7,8,9,10]
 
 function MainOwner(): React.MixedElement {
+    const { loading, error, data } = useQuery(GET_LOCATIONS);
+    const [address, setAddress] = useState("");
 
-        const [address, setAddress] = useState("");
+    useEffect(() => {
+        // TODO: display owner's parkings close to the specified address
+    }, [address])
 
-        useEffect(()=>{
-            // TODO: display owner's parkings close to the specified address
-        },[address])
-
-        function handleOnChangeAddress (event) {
-            setAddress(event.target.value)
-        }
+    function handleOnChangeAddress(event) {
+        setAddress(event.target.value)
+    }
 
 
 
@@ -38,13 +39,22 @@ function MainOwner(): React.MixedElement {
         </div>
         <div className="owner-parkings">
             {
-                testParkings.map((parking) =>
-                    <ParkingCard key={parking} parking={parking}></ParkingCard>
-                )
+                loading ? <p>Loading...</p>
+                    :
+                    error ? <p> Error </p>
+                        :
+                        (
+                            data !== null &&
+                            data.locations.map(locat =>
+                                <ParkingCard key={locat.id} parking={locat} />
+                            )
+                        )
+
             }
         </div>
 
     </>
 }
+
 
 export default MainOwner;

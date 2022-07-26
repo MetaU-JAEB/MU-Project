@@ -1,13 +1,16 @@
 
-/* img {
+.parking-card-img {
     border: 1px solid grey;
     width: 100%;
-  } */
+  }
 
 .parking-card{
+    border: 1px solid rgb(71, 71, 71);
     margin: 30px auto;
     padding: 5px;
     width: 90%;
+    max-height: 50vh;
+    overflow: auto;
 }
 
 .image-container{
