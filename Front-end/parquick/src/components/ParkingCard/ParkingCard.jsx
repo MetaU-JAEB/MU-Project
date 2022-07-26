@@ -6,7 +6,7 @@ function ParkingCard({parking}): React.MixedElement {
     return <>
         <div className="parking-card">
             <div className="parking-card-picture">
-                <img src="images/map-example.png" alt="" />
+                <img src="images/map-example.png" alt="" className='parking-card-img'/>
             </div>
             <div className="parking-card-content">
                 <p>Rented/Available</p>
