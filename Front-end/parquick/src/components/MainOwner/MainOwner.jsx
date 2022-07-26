@@ -3,23 +3,14 @@ import * as React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import ParkingCard from '../ParkingCard/ParkingCard';
 import './MainOwner.css';
+import { GET_LOCATIONS } from '../../queries/locationQueries';
 
-const testParkings = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-const GET_LOCATIONS = gql`
-  query GetLocations {
-    locations {
-      id
-      name
-      description
-      photo
-    }
-  }
-`;
 
 function MainOwner(): React.MixedElement {
+    const { loading, error, data } = useQuery(GET_LOCATIONS);
     const [address, setAddress] = useState("");
 
     useEffect(() => {
@@ -48,32 +39,22 @@ function MainOwner(): React.MixedElement {
         </div>
         <div className="owner-parkings">
             {
-                testParkings.map((parking) =>
-                    <ParkingCard key={parking} parking={parking}></ParkingCard>
-                )
+                loading ? <p>Loading...</p>
+                    :
+                    error ? <p> Error </p>
+                        :
+                        (
+                            data !== null &&
+                            data.locations.map(locat =>
+                                <ParkingCard key={locat.id} parking={locat} />
+                            )
+                        )
+
             }
         </div>
-        <DisplayLocations />
 
     </>
 }
 
-function DisplayLocations() {
-    const { loading, error, data } = useQuery(GET_LOCATIONS);
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error :(</p>;
-
-    return data.locations.map(({ id, name, description, photo }) => (
-      <div key={id}>
-        <h3>{name}</h3>
-        <img width="400" height="250" alt="location-reference" src={`${photo}`} />
-        <br />
-        <b>About this location:</b>
-        <p>{description}</p>
-        <br />
-      </div>
-    ));
-  }
 
 export default MainOwner;

@@ -9,6 +9,8 @@
     margin: 30px auto;
     padding: 5px;
     width: 90%;
+    max-height: 50vh;
+    overflow: auto;
 }
 
 .image-container{
