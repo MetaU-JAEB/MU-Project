@@ -6,11 +6,11 @@ const schema = require('./schema/schema');
 /// GETTING THE DB URL
 const mongoURL = process.env.MONGO;
 
-// mongoose.connect(mongoURL);
-// mongoose.connection.once('open', () => {
-//   // eslint-disable-next-line no-console
-//   console.log('Connected to databasee');
-// });
+mongoose.connect(mongoURL);
+mongoose.connection.once('open', () => {
+  // eslint-disable-next-line no-console
+  console.log('Connected to databasee');
+});
 
 const app = express();
 

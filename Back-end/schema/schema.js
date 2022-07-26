@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { composeWithMongooseDiscriminators } = require('graphql-compose-mongoose');
+const { composeWithMongooseDiscriminators, composeWithMongoose, composeMongoose } = require('graphql-compose-mongoose');
 const { schemaComposer } = require('graphql-compose');
 
 
@@ -25,7 +25,7 @@ const Dimensions = mongoose.Schema({
 }, { _id: false });
 
 const Car = mongoose.Schema({
-    dimensions : Dimensions
+    dimensions: Dimensions,
     plates: String
 }, { _id: false });
 
@@ -42,20 +42,20 @@ const Parking = mongoose.Schema({
     images: [String],
     ubication: Ubication,
     price: Number,
-    dimensions : Dimensions,
-    isUnderShade: Number,
+    dimensions: Dimensions,
+    isUnderShade: Number, // to boolean and null if don't know
     isInside: Number,
-    isWorking: Number
+    isWorking: Number,
     totalLots: Number,
     availableLots: Number
-});
+},{ timestamps: true });
 
 const Rent = mongoose.Schema({
     parkingId: mongoose.Schema.Types.ObjectId,
     driverId: mongoose.Schema.Types.ObjectId,
-    startAt : mongoose.Schema.Types.Date,
-    endsAt : mongoose.Schema.Types.Date
-});
+    startAt: mongoose.Schema.Types.Date,
+    endsAt: mongoose.Schema.Types.Date
+},{ timestamps: true });
 
 
 // DEFINE USER SCHEMAS
@@ -75,11 +75,11 @@ const User = new mongoose.Schema({
     phone: String,
     address: String,
     cards: [BankCard]
-});
+},{ timestamps: true });
 
 // DEFINE DISCRIMINATOR SCHEMAS
 const Driver = new mongoose.Schema({
-    cars: [Car],
+    cars: [Car]
 });
 
 const Owner = new mongoose.Schema({
@@ -91,6 +91,8 @@ User.set('discriminatorKey', DKey);
 
 // create base Model
 const UserModel = mongoose.model('User', User);
+const ParkingModel = mongoose.model('Parking', Parking);
+const RentModel = mongoose.model('Rent', Rent);
 
 // create mongoose discriminator models
 const DriverModel = UserModel.discriminator(enumUserType.DRIVER, Driver);
@@ -103,6 +105,13 @@ const baseOptions = { // regular TypeConverterOptions, passed to composeMongoose
     //     remove: ['parkings'],
     // },
 };
+
+// Type Composers
+const ParkingTC = composeWithMongoose(ParkingModel);
+const RentTC = composeWithMongoose(RentModel);
+
+
+// Discriminator Type Composers
 const UserDTC = composeWithMongooseDiscriminators(UserModel, baseOptions);
 
 // create Discriminator Types
@@ -117,46 +126,125 @@ const DriverTC = UserDTC.discriminator(DriverModel, driverTypeConverterOptions);
 const OwnerTC = UserDTC.discriminator(OwnerModel);
 // baseOptions -> customizationsOptions applied
 
-// console.log('Resolvers',DriverTC.getResolvers())
+// Owner relations
 OwnerTC.addRelation(
     'parkings',
     {
-        resolver: () => OwnerTC.getResolver('findByIds'),
-        prepareArgs: { // resolver `findByIds` has `_ids` arg, let provide value to it
-            _ids: (source) => source.parkingsIds,
+        resolver: () => ParkingTC.getResolver('findMany'),
+        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+            filter: (owner) => ({
+                ownerId: owner._id,
+            })
         },
-        projection: { parkingsIds: 1 }, // point fields in source object, which should be fetched from DB
+        projection: { _id: 1 }, // required fields from Owner object, 1=true
     },
 );
 OwnerTC.addRelation(
     'parkingsWithShade',
     {
-        resolver: () => OwnerTC.getResolver('findMany'),
+        resolver: () => ParkingTC.getResolver('findMany'),
         prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
-            filter: (source) => ({
-                _operators: { // Applying criteria on fields which have
-                    // operators enabled for them (by default, indexed fields only)
-                    _id: { in: source.parkingsIds },
-                    isUnderShade: 1,
-                }
+            filter: (owner) => ({
+                ownerId: owner._id,
+                isUnderShade: 1
             })
         },
-        projection: { parkingsIds: 1 }, // required fields from source object
+        projection: { _id: 1 }, // required fields from Owner object, 1=true
+    },
+);
+
+/// Driver Relations
+DriverTC.addRelation(
+    'rents',
+    {
+        resolver: () => RentTC.getResolver('findMany'),
+        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+            filter: (driver) => ({
+                driverId: driver._id
+            })
+        },
+        projection: { _id: 1 }, // required fields from Driver object, 1=true
+    },
+);
+
+
+//Parking Relations
+ParkingTC.addRelation(
+    'owner',
+    {
+        resolver: () => OwnerTC.getResolver('findOne'),
+        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+            filter: (parking) => ({
+                _id: parking.ownerId
+            })
+        },
+        projection: { ownerId: 1 }, // required fields from Parking object, 1=true
+    },
+);
+
+ParkingTC.addRelation(
+    'rents',
+    {
+        resolver: () => RentTC.getResolver('findMany'),
+        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+            filter: (parking) => ({
+                parkingId: parking._id
+            })
+        },
+        projection: { _id: 1 }, // required fields from Parking object, 1=true
+    },
+);
+
+//Rent relations
+RentTC.addRelation(
+    'parking',
+    {
+        resolver: () => ParkingTC.getResolver('findOne'),
+        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+            filter: (rent) => ({
+                _id: rent.parkingId
+            })
+        },
+        projection: { parkingId: 1 }, // required fields from Rent object, 1=true
+    },
+);
+
+RentTC.addRelation(
+    'driver',
+    {
+        resolver: () => DriverTC.getResolver('findOne'),
+        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+            filter: (rent) => ({
+                _id: rent.driverId
+            })
+        },
+        projection: { driverId: 1 }, // required fields from Rent object, 1=true
     },
 );
 
 // You may now use UserDTC to add fields to all Discriminators
 schemaComposer.Query.addFields({
     driverMany: DriverTC.getResolver('findMany'),
-    personMany: OwnerTC.getResolver('findMany'),
+    ownerMany: OwnerTC.getResolver('findMany'),
     userMany: UserDTC.getResolver('findMany'),
+    parkingMany: ParkingTC.getResolver('findMany'),
+    rentMany: RentTC.getResolver('findMany'),
 
 });
 // Use DriverTC, `OwnerTC as any other ObjectTypeComposer.
 schemaComposer.Mutation.addFields({
     driverCreate: DriverTC.getResolver('createOne'),
-    personCreate: OwnerTC.getResolver('createOne'),
+    ownerCreate: OwnerTC.getResolver('createOne'),
     userCreate: UserDTC.getResolver('createOne'),
+    parkingCreate: ParkingTC.getResolver('createOne'),
+    rentCreate: RentTC.getResolver('createOne'),
+
+    driverUpdate: DriverTC.getResolver('updateOne'),
+    ownerUpdate: OwnerTC.getResolver('updateOne'),
+    userUpdate: UserDTC.getResolver('updateOne'),
+    parkingUpdate: ParkingTC.getResolver('updateOne'),
+    rentUpdate: RentTC.getResolver('updateOne'),
+
 });
 
 const schema = schemaComposer.buildSchema();
@@ -174,7 +262,7 @@ const schema = schemaComposer.buildSchema();
                             modelNumber
                             }
                         }
-                        personCreate(record: {name: "mernxl", dob: 57275272}) {
+                        ownerCreate(record: {name: "mernxl", dob: 57275272}) {
                             record {
                             __typename
                             type
@@ -190,7 +278,7 @@ const schema = schemaComposer.buildSchema();
                     record: { __typename: 'Driver', type: 'Driver',
                      name: 'Queue XL', modelNumber: 360 },
                 },
-                personCreate: {
+                ownerCreate: {
                     record: { __typename: 'Owner', type: 'Owner', name: 'mernxl', dob: 57275272 },
                 },
             },
