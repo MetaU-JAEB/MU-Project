@@ -1,7 +1,7 @@
 //
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { ApolloClient, ApolloProvider, InMemoryCache} from '@apollo/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -11,27 +11,13 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-// const client = ...
-
-client
-  .query({
-    query: gql`
-      query GetLocations {
-        locations {
-          id
-          name
-          description
-          photo
-        }
-      }
-    `,
-  })
-  .then((result) => console.log(result));
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
   </React.StrictMode>
 );
 
