@@ -229,6 +229,11 @@ schemaComposer.Query.addFields({
     userMany: UserDTC.getResolver('findMany'),
     parkingMany: ParkingTC.getResolver('findMany'),
     rentMany: RentTC.getResolver('findMany'),
+    driverById: DriverTC.getResolver('findById'),
+    ownerById: OwnerTC.getResolver('findById'),
+    userById: UserDTC.getResolver('findById'),
+    parkingById: ParkingTC.getResolver('findById'),
+    rentById: RentTC.getResolver('findById'),
 
 });
 // Use DriverTC, `OwnerTC as any other ObjectTypeComposer.

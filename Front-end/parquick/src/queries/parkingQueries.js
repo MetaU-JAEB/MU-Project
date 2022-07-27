@@ -14,3 +14,20 @@ export const GET_PARKINGS = gql`
         }
     }
 `;
+
+export const GET_PARKING_BY_ID = (id) => {
+    return gql`
+    query ParkingById {
+        parkingById(_id: "${id}") {
+          _id
+          images
+          price
+          isUnderShade
+          totalLots
+          ubication {
+              address
+          }
+        }
+      }
+    `;
+}
