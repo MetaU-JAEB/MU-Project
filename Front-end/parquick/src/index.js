@@ -5,9 +5,10 @@ import { ApolloClient, ApolloProvider, InMemoryCache} from '@apollo/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { API_URL } from './utils/constants';
 
 const client = new ApolloClient({
-  uri: 'https://flyby-gateway.herokuapp.com/',
+  uri: API_URL,
   cache: new InMemoryCache(),
 });
 

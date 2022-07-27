@@ -8,13 +8,13 @@ function Rented () : React.MixedElement {
         // TODO : make query to extend time of rental
     }
     return <>
-        <p>id : {testParking.id}</p>
+        <p>id : {testParking._id}</p>
         <div className="park-images">
             {testParking.images.map(image => {
-                return <img src={`/${image}`} key={image}></img>
+                return <img src={`${image}`} key={image}></img>
             })}
         </div>
-        <p>Address : {testParking.address}</p>
+        <p>Address : {testParking.ubication.address}</p>
         <p>Price : ${testParking.price}</p>
         <label htmlFor="rent-until">Rent until</label>
         <input type="date" name="rento-until" id="" />

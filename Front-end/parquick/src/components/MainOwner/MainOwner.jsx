@@ -6,11 +6,11 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import ParkingCard from '../ParkingCard/ParkingCard';
 import './MainOwner.css';
-import { GET_LOCATIONS } from '../../queries/locationQueries';
+import { GET_PARKINGS } from '../../queries/parkingQueries';
 
 
 function MainOwner(): React.MixedElement {
-    const { loading, error, data } = useQuery(GET_LOCATIONS);
+    const { loading, error, data } = useQuery(GET_PARKINGS);
     const [address, setAddress] = useState("");
 
     useEffect(() => {
@@ -45,8 +45,8 @@ function MainOwner(): React.MixedElement {
                         :
                         (
                             data !== null &&
-                            data.locations.map(locat =>
-                                <ParkingCard key={locat.id} parking={locat} />
+                            data.parkingMany.map((parking) =>
+                                <ParkingCard key={parking._id} parking={parking}/>
                             )
                         )
 

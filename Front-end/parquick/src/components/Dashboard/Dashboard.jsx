@@ -9,9 +9,9 @@ function Dashboard () : React.MixedElement {
             <h1> Lots rented </h1>
             {
                 testDashbordParkings.map((park) => {
-                    return <div className="park-element" key={park.id}>
-                        <p>id: {park.id}</p>
-                        <p>address: {park.address}</p>
+                    return <div className="park-element" key={park._id}>
+                        <p>id: {park._id}</p>
+                        <p>address: {park.ubication.address}</p>
                         <p>price : ${park.price}</p>
                     </div>
                 })

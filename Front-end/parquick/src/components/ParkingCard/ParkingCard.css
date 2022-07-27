@@ -2,6 +2,11 @@
 .parking-card-img {
     border: 1px solid grey;
     width: 100%;
+    opacity: 1;
+    transition: opacity 0.1s;
+  }
+.parking-card-img:hover {
+    opacity: 0.7;
   }
 
 .parking-card{
@@ -10,7 +15,11 @@
     padding: 5px;
     width: 90%;
     max-height: 50vh;
-    overflow: auto;
+    overflow-wrap: break-word;
+    transition: width 0.2s;
+}
+.parking-card:hover{
+    width: 98%;
 }
 
 .image-container{

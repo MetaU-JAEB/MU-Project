@@ -30,7 +30,7 @@ function AddParking(): React.MixedElement {
     return <>
         <div className='add-parking'>
             <form action="#">
-                <input type="text" onChange={(e) => handleOnChangeParking(e, "address")} className='add-parking-info' value={parking.address} name="new-parking-address" id="new-parking-address" placeholder='new-parking-address' />
+                <input type="text" onChange={(e) => handleOnChangeParking(e, "address")} className='add-parking-info' value={parking.ubication?.address} name="new-parking-address" id="new-parking-address" placeholder='new-parking-address' />
                 <input type="text" onChange={(e) => handleOnChangeParking(e, "lat")} name="lat" id="lat" placeholder='lat' disabled/>
                 <input type="text"  onChange={(e) => handleOnChangeParking(e, "lon")} name="lon" id="lon" placeholder='lon' disabled/>
                 <input type="number" onChange={(e) => handleOnChangeParking(e, "price")} className='add-parking-info' placeholder='price, in USD' />

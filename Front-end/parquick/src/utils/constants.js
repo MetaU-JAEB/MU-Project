@@ -8,3 +8,7 @@ export const MAP_CIRCLES_DISTANCES = {CLOSE: 300, MIDDLE: 600, FAR: 900}
 
 // How far or close; bigger the number, closer the zoom
 export const MAP_ZOOM = {NEIGHBORHOOD: 14, CITY:10}
+
+
+// Own API
+export const API_URL = 'http://localhost:4000/graphql'
