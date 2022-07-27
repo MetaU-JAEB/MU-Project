@@ -1,9 +1,15 @@
-//
+// @flow
 import * as React from 'react'
 import { Link } from 'react-router-dom';
 import './ParkingCard.css';
+import type { Parking } from "../../types/Parking";
+import { testParking } from "../../types/Parking";
 
-function ParkingCard({ parking }): React.MixedElement {
+type PropsParkingCard = {
+    parking : Parking
+}
+
+function ParkingCard({ parking = testParking } : PropsParkingCard): React.MixedElement {
     return <>
         <div className="parking-card">
             <div className="parking-card-picture">
@@ -16,7 +22,7 @@ function ParkingCard({ parking }): React.MixedElement {
                 <p>Available : {parking.availableLots}</p>
                 <p>id: {parking._id}</p>
                 <p>Price : {parking.price}</p>
-                <p>Address {parking.ubication.address}</p>
+                <p>Address {parking.ubication?.address}</p>
             </div>
         </div>
     </>
