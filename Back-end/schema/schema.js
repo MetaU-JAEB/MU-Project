@@ -224,6 +224,54 @@ RentTC.addRelation(
     },
 );
 
+// Authentication
+
+
+UserDTC.addResolver({
+    kind: 'mutation',
+    name: 'userRegister',
+    args: {
+        email: 'String!',
+        password: 'String!',
+        type: 'String!',
+
+    },
+    type: UserDTC.getResolver('updateById').getType(),
+    resolve: async ({ args, context }) => {
+        try {
+
+            let existUser = null;
+            if (isNaN(Number(args.email))) {
+                existUser = await UserModel.findOne({ email: args.email });
+            } else {
+                existUser = await UserModel.findOne({ phone: Number(args.email) });
+            }
+            if (existUser) {
+                throw new Error('User exists already.')
+            }
+            const hashedPassword = await bcrypt.hash(args.password, 12);
+
+            const newUser = new UserModel({
+                email: args.email,
+                password: hashedPassword,
+                type : args.type
+            });
+
+            const result = await newUser.save();
+
+
+            return {
+                recordId : result._id,
+                record : result
+
+            }
+        } catch (error) {
+            throw error;
+        }
+
+    }
+})
+
 // You may now use UserDTC to add fields to all Discriminators
 schemaComposer.Query.addFields({
     driverMany: DriverTC.getResolver('findMany'),
@@ -251,6 +299,8 @@ schemaComposer.Mutation.addFields({
     userUpdate: UserDTC.getResolver('updateOne'),
     parkingUpdate: ParkingTC.getResolver('updateOne'),
     rentUpdate: RentTC.getResolver('updateOne'),
+
+    userRegister : UserDTC.getResolver('userRegister')
 
 });
 
