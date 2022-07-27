@@ -6,13 +6,14 @@ function ParkingCard({parking}): React.MixedElement {
     return <>
         <div className="parking-card">
             <div className="parking-card-picture">
-                <img src={parking.photo} alt="" className='parking-card-img'/>
+                <img src={parking.images[0]} alt="" className='parking-card-img'/>
             </div>
             <div className="parking-card-content">
-                <p>Rented/Available</p>
-                <p>id: {parking.id}</p>
-                <p>Price : {parking.name}</p>
-                <p>Address {parking.description}</p>
+                <p>Total : {parking.totalLots}</p>
+                <p>Available : {parking.availableLots}</p>
+                <p>id: {parking._id}</p>
+                <p>Price : {parking.price}</p>
+                <p>Address {parking.ubication.address}</p>
             </div>
         </div>
     </>
