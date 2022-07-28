@@ -234,7 +234,8 @@ UserDTC.addResolver({
         email: 'String!',
         password: 'String!',
         type: 'String!',
-
+        firstName: 'String!',
+        lastName: 'String!'
     },
     type: UserDTC.getResolver('updateById').getType(),
     resolve: async ({ args, context }) => {
@@ -254,15 +255,17 @@ UserDTC.addResolver({
             const newUser = new UserModel({
                 email: args.email,
                 password: hashedPassword,
-                type : args.type
+                type: args.type,
+                firstName: args.firstName,
+                lastName: args.lastName
             });
 
             const result = await newUser.save();
 
 
             return {
-                recordId : result._id,
-                record : result
+                recordId: result._id,
+                record: result
 
             }
         } catch (error) {
@@ -300,7 +303,7 @@ schemaComposer.Mutation.addFields({
     parkingUpdate: ParkingTC.getResolver('updateOne'),
     rentUpdate: RentTC.getResolver('updateOne'),
 
-    userRegister : UserDTC.getResolver('userRegister')
+    userRegister: UserDTC.getResolver('userRegister')
 
 });
 
