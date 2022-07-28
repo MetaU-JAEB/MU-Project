@@ -234,7 +234,8 @@ UserDTC.addResolver({
         email: 'String!',
         password: 'String!',
         type: 'String!',
-
+        firstName: 'String!',
+        lastName: 'String!'
     },
     type: UserDTC.getResolver('updateById').getType(),
     resolve: async ({ args, context }) => {
@@ -254,15 +255,17 @@ UserDTC.addResolver({
             const newUser = new UserModel({
                 email: args.email,
                 password: hashedPassword,
-                type : args.type
+                type: args.type,
+                firstName: args.firstName,
+                lastName: args.lastName
             });
 
             const result = await newUser.save();
 
 
             return {
-                recordId : result._id,
-                record : result
+                recordId: result._id,
+                record: result
 
             }
         } catch (error) {
@@ -271,6 +274,69 @@ UserDTC.addResolver({
 
     }
 })
+
+UserDTC.addFields({
+    token: {
+        type: 'String',
+        description: 'Token of authenticated user.'
+    }
+})
+
+
+UserDTC.addResolver({
+    kind: 'mutation',
+    name: 'userLogin',
+    args: {
+        email: 'String!',
+        password: 'String!',
+    },
+    type: UserDTC.getResolver('updateById').getType(),
+    resolve: async ({ args, context }) => {
+
+        let user = null;
+        if (isNaN(Number(args.email))) {
+            user = await UserModel.findOne({ email: args.email });
+        } else {
+            user = await UserModel.findOne({ phone: Number(args.email) });
+        }
+
+        if (!user) {
+            throw new Error('User does not exist.')
+        }
+
+
+        const isEqual = await bcrypt.compare(args.password, user.password);
+        if (!isEqual) {
+            throw new Error('Password is not correct.');
+        }
+
+
+        const token = jwt.sign({
+            userId: user._id,
+            userEmail: user.email,
+            userPassword: user.password
+        }, "secretkey", {
+            expiresIn: '1h'
+        });
+
+        return {
+            recordId: user._id,
+            record: {
+                token: token,
+                _id: user._id,
+                type: user.type,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                password: user.password,
+                phone: user.phone,
+                address: user.address,
+                cards: [user.cards.map((card) => card.number)]
+            }
+        }
+    }
+})
+
 
 // You may now use UserDTC to add fields to all Discriminators
 schemaComposer.Query.addFields({
@@ -300,7 +366,8 @@ schemaComposer.Mutation.addFields({
     parkingUpdate: ParkingTC.getResolver('updateOne'),
     rentUpdate: RentTC.getResolver('updateOne'),
 
-    userRegister : UserDTC.getResolver('userRegister')
+    userRegister: UserDTC.getResolver('userRegister'),
+    userLogin: UserDTC.getResolver('userLogin')
 
 });
 
