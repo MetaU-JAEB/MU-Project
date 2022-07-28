@@ -1,28 +1,42 @@
-// @flow
+//
 import * as React from 'react'
 import { useEffect, useState } from "react";
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 import './Login.css';
+import { API_URL } from '../../utils/constants';
+import { USER_LOGIN } from '../../queries/userQueries';
+
+const client = new ApolloClient({
+    uri: API_URL,
+    cache: new InMemoryCache(),
+});
 
 function Login(): React.MixedElement {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    useEffect(()=>{
+    useEffect(() => {
         // TODO: when email or password changes maybe change the style
         // of the submit button (toggles disability for the moment)
     }, [email, password]);
 
-    function handleOnSubmitLogin(event){
+    function handleOnSubmitLogin(event) {
         event.preventDefault();
-        // TODO: make query to the server and log in
+        client
+            .mutate({
+                mutation: USER_LOGIN(email,password),
+            })
+            .then((result) => {
+                // TODO: store the result in localstorage
+            } );
     }
 
     return <>
         <form action="#">
-            <input type="text" name="e-mail" id="e-mail" placeholder='e-mail' value={email} onChange={(e) => setEmail(e.target.value)}/>
-            <input type="text" name="password" id="password" placeholder='password' value={password} onChange={(e)=> setPassword(e.target.value)}/>
-            <button type="submit" onClick={handleOnSubmitLogin} disabled={(email==="" || password==="")}>Login</button>
+            <input type="text" name="e-mail" id="e-mail" placeholder='e-mail' value={email} onChange={(e) => setEmail(e.target.value)} />
+            <input type="text" name="password" id="password" placeholder='password' value={password} onChange={(e) => setPassword(e.target.value)} />
+            <button type="submit" onClick={handleOnSubmitLogin} disabled={(email === "" || password === "")}>Login</button>
         </form>
     </>
 }
