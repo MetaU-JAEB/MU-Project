@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { composeWithMongooseDiscriminators, composeWithMongoose, composeMongoose } = require('graphql-compose-mongoose');
 const { schemaComposer } = require('graphql-compose');
 
@@ -48,14 +50,14 @@ const Parking = mongoose.Schema({
     isWorking: Number,
     totalLots: Number,
     availableLots: Number
-},{ timestamps: true });
+}, { timestamps: true });
 
 const Rent = mongoose.Schema({
     parkingId: mongoose.Schema.Types.ObjectId,
     driverId: mongoose.Schema.Types.ObjectId,
     startAt: mongoose.Schema.Types.Date,
     endsAt: mongoose.Schema.Types.Date
-},{ timestamps: true });
+}, { timestamps: true });
 
 
 // DEFINE USER SCHEMAS
@@ -75,7 +77,7 @@ const User = new mongoose.Schema({
     phone: String,
     address: String,
     cards: [BankCard]
-},{ timestamps: true });
+}, { timestamps: true });
 
 // DEFINE DISCRIMINATOR SCHEMAS
 const Driver = new mongoose.Schema({
@@ -222,6 +224,54 @@ RentTC.addRelation(
     },
 );
 
+// Authentication
+
+
+UserDTC.addResolver({
+    kind: 'mutation',
+    name: 'userRegister',
+    args: {
+        email: 'String!',
+        password: 'String!',
+        type: 'String!',
+
+    },
+    type: UserDTC.getResolver('updateById').getType(),
+    resolve: async ({ args, context }) => {
+        try {
+
+            let existUser = null;
+            if (isNaN(Number(args.email))) {
+                existUser = await UserModel.findOne({ email: args.email });
+            } else {
+                existUser = await UserModel.findOne({ phone: Number(args.email) });
+            }
+            if (existUser) {
+                throw new Error('User exists already.')
+            }
+            const hashedPassword = await bcrypt.hash(args.password, 12);
+
+            const newUser = new UserModel({
+                email: args.email,
+                password: hashedPassword,
+                type : args.type
+            });
+
+            const result = await newUser.save();
+
+
+            return {
+                recordId : result._id,
+                record : result
+
+            }
+        } catch (error) {
+            throw error;
+        }
+
+    }
+})
+
 // You may now use UserDTC to add fields to all Discriminators
 schemaComposer.Query.addFields({
     driverMany: DriverTC.getResolver('findMany'),
@@ -249,6 +299,8 @@ schemaComposer.Mutation.addFields({
     userUpdate: UserDTC.getResolver('updateOne'),
     parkingUpdate: ParkingTC.getResolver('updateOne'),
     rentUpdate: RentTC.getResolver('updateOne'),
+
+    userRegister : UserDTC.getResolver('userRegister')
 
 });
 
