@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { ApolloServer } = require('apollo-server-express');
 const schema = require('./schema/schema');
+const isAuth = require('./middleware/is-auth');
 
 /// GETTING THE DB URL
 const mongoURL = process.env.MONGO;
@@ -14,11 +15,15 @@ mongoose.connection.once('open', () => {
 
 const app = express();
 
+app.use(isAuth);
+
 const server = new ApolloServer({
   schema,
-  context() {
-    // This role should actually come from a JWT or something
-    return { role: 'admin' };
+  context : ({req}) => {
+    // Getting req from the middleware isAuth
+    // if there is no user, there won't be user
+    const user = req.user || null;
+    return { user: user, isAuth : req.isAuth };
   },
 });
 
