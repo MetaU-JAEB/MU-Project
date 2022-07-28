@@ -280,7 +280,7 @@ UserDTC.addFields({
         type: 'String',
         description: 'Token of authenticated user.'
     }
- })
+})
 
 
 UserDTC.addResolver({
@@ -306,12 +306,19 @@ UserDTC.addResolver({
 
 
         const isEqual = await bcrypt.compare(args.password, user.password);
-        if(!isEqual) {
+        if (!isEqual) {
             throw new Error('Password is not correct.');
         }
-        const token = jwt.sign({userId: user.id}, "secretkey", {
-            expiresIn: '24h'
+
+
+        const token = jwt.sign({
+            userId: user._id,
+            userEmail: user.email,
+            userPassword: user.password
+        }, "secretkey", {
+            expiresIn: '1h'
         });
+
         return {
             recordId: user._id,
             record: {
@@ -328,7 +335,7 @@ UserDTC.addResolver({
             }
         }
     }
- })
+})
 
 
 // You may now use UserDTC to add fields to all Discriminators
