@@ -275,6 +275,62 @@ UserDTC.addResolver({
     }
 })
 
+UserDTC.addFields({
+    token: {
+        type: 'String',
+        description: 'Token of authenticated user.'
+    }
+ })
+
+
+UserDTC.addResolver({
+    kind: 'mutation',
+    name: 'userLogin',
+    args: {
+        email: 'String!',
+        password: 'String!',
+    },
+    type: UserDTC.getResolver('updateById').getType(),
+    resolve: async ({ args, context }) => {
+        console.log("loggining", context?.req?.isAuth)
+        let user = null;
+        if (isNaN(Number(args.email))) {
+            user = await UserModel.findOne({ email: args.email });
+        } else {
+            user = await UserModel.findOne({ phone: Number(args.email) });
+        }
+
+        if (!user) {
+            throw new Error('User does not exist.')
+        }
+
+        console.log("user: ", user)
+        const isEqual = await bcrypt.compare(args.password, user.password);
+        if(!isEqual) {
+            throw new Error('Password is not correct.');
+        }
+        const token = jwt.sign({userId: user.id}, "secretkey", {
+            expiresIn: '24h'
+        });
+        return {
+            recordId: user._id,
+            record: {
+                token: token,
+                _id: user._id,
+                type: user.type,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                password: user.password,
+                phone: user.phone,
+                address: user.address,
+                cards: [user.cards.map((card) => card.number)]
+            }
+        }
+    }
+ })
+
+
 // You may now use UserDTC to add fields to all Discriminators
 schemaComposer.Query.addFields({
     driverMany: DriverTC.getResolver('findMany'),
@@ -303,7 +359,8 @@ schemaComposer.Mutation.addFields({
     parkingUpdate: ParkingTC.getResolver('updateOne'),
     rentUpdate: RentTC.getResolver('updateOne'),
 
-    userRegister: UserDTC.getResolver('userRegister')
+    userRegister: UserDTC.getResolver('userRegister'),
+    userLogin: UserDTC.getResolver('userLogin')
 
 });
 
