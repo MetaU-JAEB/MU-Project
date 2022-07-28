@@ -292,7 +292,7 @@ UserDTC.addResolver({
     },
     type: UserDTC.getResolver('updateById').getType(),
     resolve: async ({ args, context }) => {
-        console.log("loggining", context?.req?.isAuth)
+
         let user = null;
         if (isNaN(Number(args.email))) {
             user = await UserModel.findOne({ email: args.email });
@@ -304,7 +304,7 @@ UserDTC.addResolver({
             throw new Error('User does not exist.')
         }
 
-        console.log("user: ", user)
+
         const isEqual = await bcrypt.compare(args.password, user.password);
         if(!isEqual) {
             throw new Error('Password is not correct.');
