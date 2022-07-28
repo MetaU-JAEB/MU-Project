@@ -1,5 +1,6 @@
 //
 import { gql } from '@apollo/client';
+import User from '../types/User'
 
 
 
@@ -24,4 +25,26 @@ export const USER_LOGIN = (email : string, password : string) => {
         }
       }
     `;
+}
+
+export const USER_REGISTER = (user : User) => {
+    return gql`
+    mutation userRegister{
+        userRegister(
+            email: "${user.email}",
+            password: "${user.password}",
+            type: "${user.type}",
+            firstName: "${user.firstName}",
+            lastName: "${user.lastName}"
+        ) {
+          record {
+            email
+            password
+            firstName
+            lastName
+          }
+          recordId
+        }
+      }
+    `
 }
