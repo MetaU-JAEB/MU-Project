@@ -6,6 +6,9 @@ import type { User } from "../../types/User";
 import type { BankCard } from "../../types/BankCard";
 import { emptyUser } from "../../types/User";
 import { testCard } from "../../types/BankCard";
+import { client } from '../../queries/client';
+import { USER_REGISTER } from '../../queries/userQueries';
+
 
 function Register(): React.MixedElement {
     const [card, setCard] = useState < BankCard > (testCard);
@@ -29,7 +32,14 @@ function Register(): React.MixedElement {
 
     function handleOnSubmitRegister(event) {
         event.preventDefault();
-        // TODO: Make post request/mutation to the server
+        client
+            .mutate({
+                mutation: USER_REGISTER(user),
+            })
+            .then((result) => {
+                // TODO: store the result in localstorage
+                // auto-login or redirect to login
+            });
     }
 
 
