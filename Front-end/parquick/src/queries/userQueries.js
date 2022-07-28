@@ -27,6 +27,7 @@ export const USER_LOGIN = (email : string, password : string) => {
     `;
 }
 
+// mutation for register a new user
 export const USER_REGISTER = (user : User) => {
     return gql`
     mutation userRegister{
