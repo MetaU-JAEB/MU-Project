@@ -10,12 +10,14 @@ import {
     ComboboxOption
 } from '@reach/combobox';
 import "@reach/combobox/styles.css";
+import { useState } from 'react';
 
 /* type Props = {
     setLocation: (position : google.maps.LatLngLiteral) => void;
 } */
 
 function DriverLocation({ setLocation }): React.MixedElement {
+    const [isLoading, setIsLoading] = useState(false);
 
     const {
         ready,
@@ -28,10 +30,11 @@ function DriverLocation({ setLocation }): React.MixedElement {
     const handleSelect = async (val: string) => {
         setValue(val, false);
         clearSuggestions();
-
+        setIsLoading(true);
         const results = await getGeocode({ address: val });
         const { lat, lng } = await getLatLng(results[0]);
         setLocation({ lat, lng });
+        setIsLoading(false);
     };
 
     // Function to handle on click and get user location
@@ -46,14 +49,18 @@ function DriverLocation({ setLocation }): React.MixedElement {
         function success(pos) {
             const crd = pos.coords;
             const lat = crd.latitude;
-            const lng = crd.longitude
-            setLocation({ lat, lng })
+            const lng = crd.longitude;
+            const loc = {lat, lng}
+            setLocation(loc)
+            setIsLoading(false)
         }
 
         function error(err) {
             console.warn(`ERROR(${err.code}): ${err.message}`);
+            setIsLoading(false)
         }
 
+        setIsLoading(true);
         navigator.geolocation.getCurrentPosition(success, error, options);
     }
 
@@ -81,6 +88,12 @@ function DriverLocation({ setLocation }): React.MixedElement {
                 </ComboboxPopover>
             </Combobox>
         </div>
+        { isLoading &&
+            <div>
+                Loading location ...
+            </div>
+
+        }
     </>
 }
 

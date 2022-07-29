@@ -45,9 +45,9 @@ const Parking = mongoose.Schema({
     ubication: Ubication,
     price: Number,
     dimensions: Dimensions,
-    isUnderShade: Number, // to boolean and null if don't know
-    isInside: Number,
-    isWorking: Number,
+    isUnderShade: Boolean, // to boolean and null if don't know
+    isInside: Boolean,
+    isWorking: Boolean,
     totalLots: Number,
     availableLots: Number
 }, { timestamps: true });

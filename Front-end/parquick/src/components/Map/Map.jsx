@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react'
-import { GoogleMap, MarkerF, MarkerClusterer, DirectionsRenderer, Circle } from '@react-google-maps/api'
+import { GoogleMap, MarkerF, MarkerClusterer, DirectionsRenderer, Circle, InfoWindowF } from '@react-google-maps/api'
 import './Map.css';
 import { useCallback } from 'react';
 import { useRef } from 'react';
@@ -12,6 +12,7 @@ import { MAP_CIRCLES_DISTANCES, MAP_DEFAULT_LOCATION, MAP_ZOOM } from '../../uti
 import { generateParkings } from "../../utils/testData";
 import type { LatLngLiteral } from "../../types/LatLngLiteral";
 import { mapsStyleOptions } from "../../utils/mapsStyleOptions";
+import { Link } from 'react-router-dom';
 
 type Props = {
     isLoaded: boolean
@@ -25,6 +26,9 @@ function Map({ isLoaded }: Props): React.MixedElement {
     const [directions, setDirections] = useState < any > ();
     const [Direcciones, setDirecciones] = useState < React.MixedElement > (<></>);
     const [circles, setCircles] = useState < React.MixedElement > (<></>);
+    const [markerMap, setMarkerFMap] = useState({});
+    const [infoIsOpen, setInfoIsOpen] = useState(false);
+    const [selectedParking, setSelectedPlace] = useState(null);
 
 
     const mapRef = useRef();
@@ -90,6 +94,33 @@ function Map({ isLoaded }: Props): React.MixedElement {
         );
     };
 
+    const markerLoadHandler = (marker, place) => {
+        return setMarkerFMap(prevState => {
+            return { ...prevState, [place.id]: marker };
+        });
+    };
+    const markerClickHandler = async (event, place) => {
+
+        await setInfoIsOpen(false);
+        await setSelectedPlace(null);
+
+        // Remember which place was clicked
+
+
+        // Required so clicking a 2nd marker works as expected
+
+
+
+
+        await setInfoIsOpen(true);
+        await setSelectedPlace(place);
+
+        // If you want to zoom in a little on marker click
+
+        // if you want to center the selected MarkerF
+        //setCenter(place.pos)
+      };
+
     return <>
 
         {
@@ -130,13 +161,29 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                                 position={parking}
                                                 clusterer={clusterer}
                                                 title='parking'
-                                                onClick={() => {
+                                                onClick={async (event) => {
                                                     fetchDirections(parking);
+                                                    await markerClickHandler(event, parking);
                                                 }}
-                                            />
+                                                onLoad={marker => markerLoadHandler(marker, parking)}
+                                            >
+                                            </MarkerF>
                                         ))
                                     }
                                 </MarkerClusterer>
+                                {infoIsOpen && selectedParking && (
+                                    <InfoWindowF
+                                        anchor={markerMap[selectedParking.id]}
+                                        onCloseClick={async () => await setInfoIsOpen(false)}
+                                        zIndex={10}
+                                    >
+                                        <div>
+                                            <h3>{`Parking Id: ${selectedParking.id}`}</h3>
+                                            <div>{`Lat: ${selectedParking.lat}, Lng: ${selectedParking.lng}`}</div>
+                                            <Link to={`/parking/${selectedParking.id}`}> Check Parking</Link>
+                                        </div>
+                                    </InfoWindowF>
+                                )}
                                 {
                                     circles
                                 }

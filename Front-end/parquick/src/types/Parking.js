@@ -11,9 +11,9 @@ export type Parking = {
     dimensions: Dimensions,
     totalLots?: number,
     availableLots?: number,
-    isUnderShade?: number,
-    isInside?: number,
-    isWorking?: number
+    isUnderShade?: boolean,
+    isInside?: boolean,
+    isWorking?: boolean
 }
 
 export const testParking = {
