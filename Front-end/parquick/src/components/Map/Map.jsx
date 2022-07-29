@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react'
-import { GoogleMap, Marker, MarkerClusterer, DirectionsRenderer, Circle, InfoWindow } from '@react-google-maps/api'
+import { GoogleMap, MarkerF, MarkerClusterer, DirectionsRenderer, Circle, InfoWindowF } from '@react-google-maps/api'
 import './Map.css';
 import { useCallback } from 'react';
 import { useRef } from 'react';
@@ -25,7 +25,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
     const [directions, setDirections] = useState < any > ();
     const [Direcciones, setDirecciones] = useState < React.MixedElement > (<></>);
     const [circles, setCircles] = useState < React.MixedElement > (<></>);
-    const [markerMap, setMarkerMap] = useState({});
+    const [markerMap, setMarkerFMap] = useState({});
     const [infoOpen, setInfoOpen] = useState(false);
     const [selectedPlace, setSelectedPlace] = useState(null);
 
@@ -94,7 +94,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
     };
 
     const markerLoadHandler = (marker, place) => {
-        return setMarkerMap(prevState => {
+        return setMarkerFMap(prevState => {
             return { ...prevState, [place.id]: marker };
         });
     };
@@ -116,7 +116,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
 
         // If you want to zoom in a little on marker click
 
-        // if you want to center the selected Marker
+        // if you want to center the selected MarkerF
         //setCenter(place.pos)
       };
 
@@ -143,7 +143,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                 Direcciones
                             }
                             {location && (<>
-                                <Marker
+                                <MarkerF
                                     zIndex={15}
                                     position={location}
                                     icon={'./icons/car-icon.png'}
@@ -155,7 +155,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                     {(clusterer) =>
 
                                         parkings.map((parking) => (
-                                            <Marker
+                                            <MarkerF
                                                 key={parking.lat}
                                                 position={parking}
                                                 clusterer={clusterer}
@@ -166,12 +166,12 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                                 }}
                                                 onLoad={marker => markerLoadHandler(marker, parking)}
                                             >
-                                            </Marker>
+                                            </MarkerF>
                                         ))
                                     }
                                 </MarkerClusterer>
                                 {infoOpen && selectedPlace && (
-                                    <InfoWindow
+                                    <InfoWindowF
                                         anchor={markerMap[selectedPlace.id]}
                                         onCloseClick={async () => await setInfoOpen(false)}
                                         zIndex={10}
@@ -180,7 +180,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                             <h3>{selectedPlace.id}</h3>
                                             <div>This is your info window content</div>
                                         </div>
-                                    </InfoWindow>
+                                    </InfoWindowF>
                                 )}
                                 {
                                     circles
