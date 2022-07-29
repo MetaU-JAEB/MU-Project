@@ -12,6 +12,7 @@ import { MAP_CIRCLES_DISTANCES, MAP_DEFAULT_LOCATION, MAP_ZOOM } from '../../uti
 import { generateParkings } from "../../utils/testData";
 import type { LatLngLiteral } from "../../types/LatLngLiteral";
 import { mapsStyleOptions } from "../../utils/mapsStyleOptions";
+import { Link } from 'react-router-dom';
 
 type Props = {
     isLoaded: boolean
@@ -26,8 +27,8 @@ function Map({ isLoaded }: Props): React.MixedElement {
     const [Direcciones, setDirecciones] = useState < React.MixedElement > (<></>);
     const [circles, setCircles] = useState < React.MixedElement > (<></>);
     const [markerMap, setMarkerFMap] = useState({});
-    const [infoOpen, setInfoOpen] = useState(false);
-    const [selectedPlace, setSelectedPlace] = useState(null);
+    const [infoIsOpen, setInfoIsOpen] = useState(false);
+    const [selectedParking, setSelectedPlace] = useState(null);
 
 
     const mapRef = useRef();
@@ -100,7 +101,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
     };
     const markerClickHandler = async (event, place) => {
 
-        await setInfoOpen(false);
+        await setInfoIsOpen(false);
         await setSelectedPlace(null);
 
         // Remember which place was clicked
@@ -111,7 +112,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
 
 
 
-        await setInfoOpen(true);
+        await setInfoIsOpen(true);
         await setSelectedPlace(place);
 
         // If you want to zoom in a little on marker click
@@ -170,15 +171,16 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                         ))
                                     }
                                 </MarkerClusterer>
-                                {infoOpen && selectedPlace && (
+                                {infoIsOpen && selectedParking && (
                                     <InfoWindowF
-                                        anchor={markerMap[selectedPlace.id]}
-                                        onCloseClick={async () => await setInfoOpen(false)}
+                                        anchor={markerMap[selectedParking.id]}
+                                        onCloseClick={async () => await setInfoIsOpen(false)}
                                         zIndex={10}
                                     >
                                         <div>
-                                            <h3>{selectedPlace.id}</h3>
-                                            <div>This is your info window content</div>
+                                            <h3>{`Parking Id: ${selectedParking.id}`}</h3>
+                                            <div>{`Lat: ${selectedParking.lat}, Lng: ${selectedParking.lng}`}</div>
+                                            <Link to={`/parking/${selectedParking.id}`}> Check Parking</Link>
                                         </div>
                                     </InfoWindowF>
                                 )}
