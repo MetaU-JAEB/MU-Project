@@ -5,6 +5,7 @@ import { ApolloClient, InMemoryCache } from '@apollo/client';
 import './Login.css';
 import { API_URL } from '../../utils/constants';
 import { USER_LOGIN } from '../../queries/userQueries';
+import { useUser } from '../../contexts/UserContext';
 
 const client = new ApolloClient({
     uri: API_URL,
@@ -12,6 +13,7 @@ const client = new ApolloClient({
 });
 
 function Login(): React.MixedElement {
+    const {setUser} = useUser();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -29,6 +31,7 @@ function Login(): React.MixedElement {
             })
             .then((result) => {
                 // TODO: store the result in localstorage
+                setUser(result?.data?.userLogin?.record);
             } );
     }
 
