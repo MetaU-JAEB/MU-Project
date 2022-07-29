@@ -32,6 +32,7 @@ function Register(): React.MixedElement {
 
     function handleOnSubmitRegister(event) {
         event.preventDefault();
+        // Added in the previous commit
         client
             .mutate({
                 mutation: USER_REGISTER(user),
