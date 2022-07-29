@@ -49,8 +49,9 @@ function DriverLocation({ setLocation }): React.MixedElement {
         function success(pos) {
             const crd = pos.coords;
             const lat = crd.latitude;
-            const lng = crd.longitude
-            setLocation({ lat, lng })
+            const lng = crd.longitude;
+            const loc = {lat, lng}
+            setLocation(loc)
             setIsLoading(false)
         }
 
