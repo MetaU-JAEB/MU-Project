@@ -15,12 +15,13 @@ import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import type { User } from './types/User';
 import { UserContext } from "./contexts/UserContext";
+import { testUser } from "./types/User";
 
 
 
 function App(): React.MixedElement {
 
-  const [user, setUser] = useState < User > ({});
+  const [user, setUser] = useState < User > (testUser);
 
   useEffect(() => {
     // TODO: Fetch whatever that needs to be fetched at the begining

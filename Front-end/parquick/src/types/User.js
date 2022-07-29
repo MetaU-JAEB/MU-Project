@@ -30,7 +30,14 @@ export const emptyUser = {
 }
 
 export const testUser = {
-    firstName:"Juan",
-    type:'Owner',
-    logged: true
+    type: "Driver",
+    firstName: "Jose",
+    lastName: "Espinosa",
+    email: "jose@jose.com",
+    password: "jose",
+    passwordRepeat: "jose",
+    phone: "1234",
+    address: "California",
+    cards : [testCard],
+    token: "12345"
   }

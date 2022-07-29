@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react'
-import { GoogleMap, MarkerF, MarkerClusterer, DirectionsRenderer, Circle } from '@react-google-maps/api'
+import { GoogleMap, Marker, MarkerClusterer, DirectionsRenderer, Circle, InfoWindow } from '@react-google-maps/api'
 import './Map.css';
 import { useCallback } from 'react';
 import { useRef } from 'react';
@@ -25,6 +25,9 @@ function Map({ isLoaded }: Props): React.MixedElement {
     const [directions, setDirections] = useState < any > ();
     const [Direcciones, setDirecciones] = useState < React.MixedElement > (<></>);
     const [circles, setCircles] = useState < React.MixedElement > (<></>);
+    const [markerMap, setMarkerMap] = useState({});
+    const [infoOpen, setInfoOpen] = useState(false);
+    const [selectedPlace, setSelectedPlace] = useState(null);
 
 
     const mapRef = useRef();
@@ -90,6 +93,33 @@ function Map({ isLoaded }: Props): React.MixedElement {
         );
     };
 
+    const markerLoadHandler = (marker, place) => {
+        return setMarkerMap(prevState => {
+            return { ...prevState, [place.id]: marker };
+        });
+    };
+    const markerClickHandler = async (event, place) => {
+
+        await setInfoOpen(false);
+        await setSelectedPlace(null);
+
+        // Remember which place was clicked
+
+
+        // Required so clicking a 2nd marker works as expected
+
+
+
+
+        await setInfoOpen(true);
+        await setSelectedPlace(place);
+
+        // If you want to zoom in a little on marker click
+
+        // if you want to center the selected Marker
+        //setCenter(place.pos)
+      };
+
     return <>
 
         {
@@ -113,7 +143,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                 Direcciones
                             }
                             {location && (<>
-                                <MarkerF
+                                <Marker
                                     zIndex={15}
                                     position={location}
                                     icon={'./icons/car-icon.png'}
@@ -125,18 +155,33 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                     {(clusterer) =>
 
                                         parkings.map((parking) => (
-                                            <MarkerF
+                                            <Marker
                                                 key={parking.lat}
                                                 position={parking}
                                                 clusterer={clusterer}
                                                 title='parking'
-                                                onClick={() => {
+                                                onClick={async (event) => {
                                                     fetchDirections(parking);
+                                                    await markerClickHandler(event, parking);
                                                 }}
-                                            />
+                                                onLoad={marker => markerLoadHandler(marker, parking)}
+                                            >
+                                            </Marker>
                                         ))
                                     }
                                 </MarkerClusterer>
+                                {infoOpen && selectedPlace && (
+                                    <InfoWindow
+                                        anchor={markerMap[selectedPlace.id]}
+                                        onCloseClick={async () => await setInfoOpen(false)}
+                                        zIndex={10}
+                                    >
+                                        <div>
+                                            <h3>{selectedPlace.id}</h3>
+                                            <div>This is your info window content</div>
+                                        </div>
+                                    </InfoWindow>
+                                )}
                                 {
                                     circles
                                 }
