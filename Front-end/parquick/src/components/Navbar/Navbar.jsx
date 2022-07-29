@@ -18,11 +18,11 @@ function Navbar(): React.MixedElement {
             </div>
             <div className="navbar-right">
                 {
-                    user.logged ?
+                    (user.token && user.token !== "") ?
                         <>
                             <Link className='navbar-item' to="/"> Main </Link>
                             {
-                                user.type === "owner" ?
+                                user.type === "Owner" ?
                                     <>
                                         <Link className='navbar-item' to="AddParking"> Add Parking </Link>
                                         <Link className='navbar-item' to="Dashboard"> Dashboard </Link>

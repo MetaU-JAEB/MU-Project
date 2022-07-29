@@ -1,5 +1,6 @@
 // @flow
 export type LatLngLiteral ={
     lat : number,
-    lng : number
+    lng : number,
+    id : number
 }
