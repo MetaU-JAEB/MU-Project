@@ -14,14 +14,13 @@ import LogOut from './components/LogOut/LogOut';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import type { User } from './types/User';
-import { testUser } from "./types/User";
 import { UserContext } from "./contexts/UserContext";
 
 
 
 function App(): React.MixedElement {
 
-  const [user, setUser] = useState < User > (testUser);
+  const [user, setUser] = useState < User > ({});
 
   useEffect(() => {
     // TODO: Fetch whatever that needs to be fetched at the begining
@@ -33,7 +32,7 @@ function App(): React.MixedElement {
         <BrowserRouter>
           <Navbar />
           <Routes>
-            <Route path="/" element={<Main user={user} />} />
+            <Route path="/" element={<Main/>} />
             <Route path="Rented" element={<Rented />} />
             <Route path="AddParking" element={<AddParking />} />
             <Route path="Dashboard" element={<Dashboard />} />

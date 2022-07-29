@@ -13,6 +13,7 @@ export type User = {
     phone?: string,
     address?: string,
     cards?: Array<BankCard>,
+    token?: any,
     logged?: boolean
 }
 
