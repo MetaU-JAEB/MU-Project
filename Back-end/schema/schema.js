@@ -415,21 +415,29 @@ UserDTC.addResolver({
 
 // You may now use UserDTC to add fields to all Discriminators
 schemaComposer.Query.addFields({
+    // users
     driverMany: DriverTC.getResolver('findMany'),
     ownerMany: OwnerTC.getResolver('findMany'),
     userMany: UserDTC.getResolver('findMany'),
 
     parkingMany: ParkingTC.getResolver('findMany'),
     rentMany: RentTC.getResolver('findMany'),
-    conversationMany: ConversationTC.getResolver('findMany'),
 
+    // chat related
+    conversationMany: ConversationTC.getResolver('findMany'),
+    messageMany: MessageTC.getResolver('findMany'),
+
+    // users
     driverById: DriverTC.getResolver('findById'),
     ownerById: OwnerTC.getResolver('findById'),
     userById: UserDTC.getResolver('findById'),
 
     parkingById: ParkingTC.getResolver('findById'),
     rentById: RentTC.getResolver('findById'),
+
+    //caht related
     conversationById: ConversationTC.getResolver('findById'),
+    messageById: MessageTC.getResolver('findById'),
 
 });
 // Use DriverTC, `OwnerTC as any other ObjectTypeComposer.
@@ -442,7 +450,11 @@ schemaComposer.Mutation.addFields({
     // creates
     parkingCreate: ParkingTC.getResolver('createOne'),
     rentCreate: RentTC.getResolver('createOne'),
+
+    // chat related
     conversationCreate: ConversationTC.getResolver('createOne'),
+    messageCreate: MessageTC.getResolver('createOne'),
+
 
     parkingCreateMany: ParkingTC.getResolver('createMany'),
 
@@ -454,7 +466,10 @@ schemaComposer.Mutation.addFields({
     // updates
     parkingUpdate: ParkingTC.getResolver('updateOne'),
     rentUpdate: RentTC.getResolver('updateOne'),
+
+    // chat related
     conversationUpdate: ConversationTC.getResolver('updateOne'),
+    messageUpdate: MessageTC.getResolver('updateOne'),
 
     // hand-made
     userRegister: UserDTC.getResolver('userRegister'),
