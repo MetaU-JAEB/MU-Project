@@ -148,6 +148,24 @@ const DriverTC = UserDTC.discriminator(DriverModel, driverTypeConverterOptions);
 const OwnerTC = UserDTC.discriminator(OwnerModel);
 // baseOptions -> customizationsOptions applied
 
+
+// User Relations
+UserDTC.addRelation(
+    'conversations',
+    {
+        resolver: () => ConversationTC.getResolver('findMany'),
+        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+            filter: (user) => ({
+                OR : [
+                    {ownerId : user._id},
+                    {driverId : user._id},
+                ]
+            })
+        },
+        projection: { _id: 1 }, // required fields from User object, 1=true
+    },
+);
+
 // Owner relations
 OwnerTC.addRelation(
     'parkings',
