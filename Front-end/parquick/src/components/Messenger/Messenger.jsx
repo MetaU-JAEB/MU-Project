@@ -14,7 +14,7 @@ function Messenger(): React.MixedElement {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('newMessage: ', newMessage);
+        // Todo : store the message
     };
 
 
