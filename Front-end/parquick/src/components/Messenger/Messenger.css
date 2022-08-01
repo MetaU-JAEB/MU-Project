@@ -14,3 +14,16 @@
     padding: 10px;
     background: rgba(161, 161, 161, 0.5);
 }
+
+.chat-box-messages {
+    height: 100%;
+    overflow-y: scroll;
+    padding-right: 10px;
+  }
+
+  .chat-box-input {
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
