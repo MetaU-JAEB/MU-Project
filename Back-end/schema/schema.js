@@ -66,6 +66,12 @@ const Conversation  = mongoose.Schema({
     driverId : mongoose.Schema.Types.ObjectId,
 }, { timestamps: true });
 
+const Message  = mongoose.Schema({
+    conversationId : mongoose.Schema.Types.ObjectId,
+    text : String,
+    senderId : mongoose.Schema.Types.ObjectId
+}, { timestamps: true });
+
 
 // DEFINE USER SCHEMAS
 const User = new mongoose.Schema({
@@ -102,7 +108,9 @@ User.set('discriminatorKey', DKey);
 const UserModel = mongoose.model('User', User);
 const ParkingModel = mongoose.model('Parking', Parking);
 const RentModel = mongoose.model('Rent', Rent);
+// chat models
 const ConversationModel = mongoose.model('Conversation', Conversation);
+const MessageModel = mongoose.model('Message', Message);
 
 // create mongoose discriminator models
 const DriverModel = UserModel.discriminator(enumUserType.DRIVER, Driver);
@@ -122,6 +130,7 @@ const RentTC = composeWithMongoose(RentModel);
 
 // Chat
 const ConversationTC = composeWithMongoose(ConversationModel);
+const MessageTC = composeWithMongoose(MessageModel);
 
 
 // Discriminator Type Composers
@@ -236,7 +245,7 @@ RentTC.addRelation(
 );
 
 
-// chat
+// chat relations
 ConversationTC.addRelation(
     'driver',
     {
@@ -259,6 +268,32 @@ ConversationTC.addRelation(
             })
         },
         projection: { ownerId: 1 }, // required fields from Conversation object, 1=true
+    },
+);
+
+
+MessageTC.addRelation(
+    'conversation',
+    {
+        resolver: () => ConversationTC.getResolver('findOne'),
+        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+            filter: (message) => ({
+                _id: message.conversationId
+            })
+        },
+        projection: { conversationId: 1 }, // required fields from Message object, 1=true
+    },
+);
+MessageTC.addRelation(
+    'sender',
+    {
+        resolver: () => UserDTC.getResolver('findOne'),
+        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+            filter: (message) => ({
+                _id: message.senderId
+            })
+        },
+        projection: { senderId: 1 }, // required fields from Message object, 1=true
     },
 );
 
