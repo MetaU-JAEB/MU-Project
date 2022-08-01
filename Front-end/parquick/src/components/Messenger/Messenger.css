@@ -1,0 +1,16 @@
+.messenger{
+    display: flex;
+}
+
+.chat-menu {
+    flex: 1;
+}
+
+.chat-box {
+    flex: 4;
+}
+
+.chat-menu-container,.chat-box-container{
+    padding: 10px;
+    background: rgba(161, 161, 161, 0.5);
+}
