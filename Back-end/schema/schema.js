@@ -270,6 +270,18 @@ ConversationTC.addRelation(
         projection: { ownerId: 1 }, // required fields from Conversation object, 1=true
     },
 );
+ConversationTC.addRelation(
+    'messages',
+    {
+        resolver: () => MessageTC.getResolver('findMany'),
+        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+            filter: (conversation) => ({
+                conversationId: conversation._id
+            })
+        },
+        projection: { _id: 1 }, // required fields from Conversation object, 1=true
+    },
+);
 
 
 MessageTC.addRelation(
