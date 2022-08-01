@@ -59,6 +59,13 @@ const Rent = mongoose.Schema({
     endsAt: mongoose.Schema.Types.Date
 }, { timestamps: true });
 
+// Chat
+
+const Conversation  = mongoose.Schema({
+    ownerId : mongoose.Schema.Types.ObjectId,
+    driverId : mongoose.Schema.Types.ObjectId,
+}, { timestamps: true });
+
 
 // DEFINE USER SCHEMAS
 const User = new mongoose.Schema({
@@ -95,6 +102,7 @@ User.set('discriminatorKey', DKey);
 const UserModel = mongoose.model('User', User);
 const ParkingModel = mongoose.model('Parking', Parking);
 const RentModel = mongoose.model('Rent', Rent);
+const ConversationModel = mongoose.model('Conversation', Conversation);
 
 // create mongoose discriminator models
 const DriverModel = UserModel.discriminator(enumUserType.DRIVER, Driver);
@@ -111,6 +119,9 @@ const baseOptions = { // regular TypeConverterOptions, passed to composeMongoose
 // Type Composers
 const ParkingTC = composeWithMongoose(ParkingModel);
 const RentTC = composeWithMongoose(RentModel);
+
+// Chat
+const ConversationTC = composeWithMongoose(ConversationModel);
 
 
 // Discriminator Type Composers
@@ -223,6 +234,35 @@ RentTC.addRelation(
         projection: { driverId: 1 }, // required fields from Rent object, 1=true
     },
 );
+
+
+// chat
+ConversationTC.addRelation(
+    'driver',
+    {
+        resolver: () => DriverTC.getResolver('findOne'),
+        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+            filter: (conversation) => ({
+                _id: conversation.driverId
+            })
+        },
+        projection: { driverId: 1 }, // required fields from Conversation object, 1=true
+    },
+);
+ConversationTC.addRelation(
+    'owner',
+    {
+        resolver: () => OwnerTC.getResolver('findOne'),
+        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+            filter: (conversation) => ({
+                _id: conversation.ownerId
+            })
+        },
+        projection: { ownerId: 1 }, // required fields from Conversation object, 1=true
+    },
+);
+
+
 
 // Authentication
 
@@ -343,31 +383,45 @@ schemaComposer.Query.addFields({
     driverMany: DriverTC.getResolver('findMany'),
     ownerMany: OwnerTC.getResolver('findMany'),
     userMany: UserDTC.getResolver('findMany'),
+
     parkingMany: ParkingTC.getResolver('findMany'),
     rentMany: RentTC.getResolver('findMany'),
+    conversationMany: ConversationTC.getResolver('findMany'),
+
     driverById: DriverTC.getResolver('findById'),
     ownerById: OwnerTC.getResolver('findById'),
     userById: UserDTC.getResolver('findById'),
+
     parkingById: ParkingTC.getResolver('findById'),
     rentById: RentTC.getResolver('findById'),
+    conversationById: ConversationTC.getResolver('findById'),
 
 });
 // Use DriverTC, `OwnerTC as any other ObjectTypeComposer.
 schemaComposer.Mutation.addFields({
+    // creates users
     driverCreate: DriverTC.getResolver('createOne'),
     ownerCreate: OwnerTC.getResolver('createOne'),
     userCreate: UserDTC.getResolver('createOne'),
+
+    // creates
     parkingCreate: ParkingTC.getResolver('createOne'),
     rentCreate: RentTC.getResolver('createOne'),
+    conversationCreate: ConversationTC.getResolver('createOne'),
 
     parkingCreateMany: ParkingTC.getResolver('createMany'),
 
+    // updates users
     driverUpdate: DriverTC.getResolver('updateOne'),
     ownerUpdate: OwnerTC.getResolver('updateOne'),
     userUpdate: UserDTC.getResolver('updateOne'),
+
+    // updates
     parkingUpdate: ParkingTC.getResolver('updateOne'),
     rentUpdate: RentTC.getResolver('updateOne'),
+    conversationUpdate: ConversationTC.getResolver('updateOne'),
 
+    // hand-made
     userRegister: UserDTC.getResolver('userRegister'),
     userLogin: UserDTC.getResolver('userLogin')
 
