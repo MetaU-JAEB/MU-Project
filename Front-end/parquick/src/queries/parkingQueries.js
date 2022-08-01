@@ -31,3 +31,30 @@ export const GET_PARKING_BY_ID = (id) => {
       }
     `;
 }
+
+
+// casting for graphql, but returning just the string, not the gql
+export const MAKE_PARKING_STRING = (parking) => {
+    return `
+    {
+        "images": [${parking.images.map((img)=>`"${img}"`)}],
+        "ownerId": "${parking.ownerId}",
+        "ubication": {
+          "lat": "${parking.ubication.lat}",
+          "lng": "${parking.ubication.lng}",
+          "address": "${parking.ubication.address}"
+        },
+        "price": ${parking.price},
+        "dimensions": {
+          "heightFts": ${parking.dimensions.heightFts},
+          "lengthFts": ${parking.dimensions.lengthFts},
+          "widthFts": ${parking.dimensions.widthFts}
+        },
+        "isUnderShade": ${parking.isUnderShade},
+        "isInside": ${parking.isInside},
+        "isWorking": ${parking.isWorking},
+        "totalLots": ${parking.totalLots},
+        "availableLots": ${parking.availableLots}
+      },
+    `;
+}

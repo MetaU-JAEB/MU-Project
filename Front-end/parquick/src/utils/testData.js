@@ -1,5 +1,6 @@
 // @flow
 
+import { MAKE_PARKING_STRING } from "../queries/parkingQueries";
 import type { LatLngLiteral } from "../types/LatLngLiteral";
 import type { Parking } from "../types/Parking";
 
@@ -32,7 +33,39 @@ export function randomCoordenadeoffset() : number {
     return offset;
 }
 
+// This should be secret
+const owners = [
+    "62dedd6f0b1c5e910ecb9213",
+    "62dee4e96feff464e9af09d4",
+    "62dee5ce6feff464e9af09d7",
+    "62e1b837d3ff5f14f9652db8",
+    "62e1b8cfd3ff5f14f9652dbb",
+    "62e1cca601d2de1ef4ba0369",
+    "62e31dc2dc5914ccb6b11235"
+]
+
+function randomOwner() : string {
+    const min = 0;
+    const max = owners.length;
+    const index = parseInt(Math.random() * (max - min) + min);
+    return owners[index];
+}
+
 // For later make a query to create them in the DB
+const saveParkings = (parkings : Array<Parking>): void => {
+
+
+    let whole = `"records" : [`
+    parkings.forEach((park) =>{
+        whole += MAKE_PARKING_STRING(park)
+    })
+    whole += "]"
+    // The next log is used to be pasted in the
+    // Apollo server/graphiql UI and make the queries from there
+    console.log('records: ', whole);
+};
+
+// Function to generate diverse parkings around the area
 export const createParkings = (position: LatLngLiteral): Array<Parking> => {
     const _parkings: Array<Parking> = [];
     if (!position) return _parkings;
@@ -58,6 +91,7 @@ export const createParkings = (position: LatLngLiteral): Array<Parking> => {
 
 
         const parking = {
+            ownerId : randomOwner(),
             ubication: ubication,
             price: randomInteger(50, 500),
             images: images,
@@ -70,6 +104,8 @@ export const createParkings = (position: LatLngLiteral): Array<Parking> => {
             _id: `${i}`
         }
         _parkings.push(parking);
+
     }
+    saveParkings(_parkings);
     return _parkings;
 };
