@@ -16,6 +16,7 @@ import Register from './components/Register/Register';
 import type { User } from './types/User';
 import { UserContext } from "./contexts/UserContext";
 import { testUser } from "./types/User";
+import Messenger from "./components/Messenger/Messenger.jsx";
 
 
 
@@ -40,6 +41,7 @@ function App(): React.MixedElement {
             <Route path="LogOut" element={<LogOut />} />
             <Route path="Login" element={<Login />} />
             <Route path="Register" element={<Register />} />
+            <Route path="Messenger" element={<Messenger />} />
             <Route path="parking/:parkingId" element={<Parking />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
