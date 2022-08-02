@@ -8,7 +8,7 @@ import './Messenger.css';
 import { client } from '../../queries/client';
 import { GET_MY_CONVERSATIONS } from '../../queries/conversation';
 import type { User } from "../../types/User";
-import { GET_MESSAGES_FROM_THIS_CONVERSATION } from '../../queries/message';
+import { CREATE_MESSAGE_FROM_USER_TO_CONVERSATION, GET_MESSAGES_FROM_THIS_CONVERSATION } from '../../queries/message';
 
 function Messenger(): React.MixedElement {
 
@@ -18,11 +18,6 @@ function Messenger(): React.MixedElement {
     const [currentChat, setCurrentChat] = useState({});
     const [messages, setMessages] = useState([]);
     const [isLoadingMessages, setIsLoadingMessages] = useState(false);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        // Todo : store the message
-    };
 
     // Fetching conversations for the user
     useEffect(() => {
@@ -53,6 +48,25 @@ function Messenger(): React.MixedElement {
 
     }, [currentChat]);
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (currentChat?._id && user?._id && messages !== "") {
+            client
+                .mutate({
+                    mutation:
+                        CREATE_MESSAGE_FROM_USER_TO_CONVERSATION(currentChat._id, newMessage, user._id),
+                })
+                .then((result) => {
+
+                    setMessages((prev) => {
+                        return [...prev, result.data.messageCreate.record]
+                    })
+                    setNewMessage("")
+                });
+        }
+        // Todo : store the message
+    };
 
     return (
         <>
@@ -79,7 +93,7 @@ function Messenger(): React.MixedElement {
                                 {
                                     isLoadingMessages ?
                                         <span className="loading-messages">
-                                             Loading messages ...
+                                            Loading messages ...
                                         </span>
                                         :
 
@@ -104,7 +118,10 @@ function Messenger(): React.MixedElement {
                                         onChange={(e) => setNewMessage(e.target.value)}
                                         value={newMessage}
                                     ></textarea>
-                                    <button className="chat-submit-button" onClick={handleSubmit}>
+                                    <button
+                                        className={newMessage !== "" ? "chat-submit-button" : "chat-submit-button no-message"}
+                                        onClick={handleSubmit}
+                                        disabled={newMessage == "" ? true : false}>
                                         Send
                                     </button>
                                 </div>

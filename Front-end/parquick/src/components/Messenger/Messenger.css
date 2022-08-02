@@ -46,9 +46,17 @@
     background-color: rgb(69, 120, 165);
     color: white;
   }
+  .chat-submit-button.no-message {
+    background-color: rgb(146, 155, 161);
+    color: white;
+    cursor: default;
+  }
 
   .chat-submit-button:hover {
     background-color: rgb(95, 168, 231);
+  }
+  .chat-submit-button.no-message:hover {
+    background-color: rgb(146, 155, 161);
   }
 
   .no-chat-selected, .no-chatted-before, .loading-messages {

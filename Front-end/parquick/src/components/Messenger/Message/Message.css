@@ -7,6 +7,7 @@
 
   .message-container{
       display: flex;
+      overflow-wrap: break-word;
   }
 
   .message-img {
