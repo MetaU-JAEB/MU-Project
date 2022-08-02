@@ -50,3 +50,16 @@
   .chat-submit-button:hover {
     background-color: rgb(95, 168, 231);
   }
+
+  .no-chat-selected {
+    margin: 20px auto;
+    font-size: 50px;
+    color: rgba(160, 159, 250, 0.582);
+    cursor: default;
+  }
+  .no-chatted-before {
+    margin: 20px auto;
+    font-size: 50px;
+    color: rgba(160, 159, 250, 0.582);
+    cursor: default;
+  }
