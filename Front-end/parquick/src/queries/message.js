@@ -24,3 +24,27 @@ export const GET_MESSAGES_FROM_THIS_CONVERSATION = (conversationId: string) => {
         }
       }
 `};
+
+
+export const CREATE_MESSAGE_FROM_USER_TO_CONVERSATION =
+ (conversationId: string, text: string, senderId: string) => {
+    return gql`
+    mutation MessageCreate2 {
+        messageCreate(record:  {
+          conversationId: "${conversationId}",
+          text: "${text}",
+          senderId: "${senderId}"
+        }) {
+          record {
+            conversationId
+            text
+            sender {
+              _id
+              firstName
+              lastName
+              type
+            }
+          }
+        }
+      }
+`};
