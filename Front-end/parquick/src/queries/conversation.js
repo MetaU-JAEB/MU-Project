@@ -4,6 +4,7 @@ import { gql } from '@apollo/client';
 
 const otherUserType = { "driver": "owner", "owner": "driver" }
 
+// Getting queries for a certain user
 export const GET_MY_CONVERSATIONS = (userType: string, userId: string) => {
     return gql`
 query MyConversations{

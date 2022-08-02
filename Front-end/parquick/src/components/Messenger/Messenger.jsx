@@ -21,6 +21,7 @@ function Messenger(): React.MixedElement {
         // Todo : store the message
     };
 
+    // Fetching conversations for the user
     useEffect(() => {
         if (user?.type && user?._id) {
             client
