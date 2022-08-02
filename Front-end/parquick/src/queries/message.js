@@ -36,13 +36,16 @@ export const CREATE_MESSAGE_FROM_USER_TO_CONVERSATION =
           senderId: "${senderId}"
         }) {
           record {
+            _id
             conversationId
             text
+            createdAt
+            senderId
             sender {
-              _id
-              firstName
-              lastName
-              type
+                firstName
+                lastName
+                type
+                _id
             }
           }
         }
