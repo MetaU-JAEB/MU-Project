@@ -59,8 +59,11 @@ function Messenger(): React.MixedElement {
                     <div className="chat-menu-container">
                         <h3 className='conversations-title'>Conversations</h3>
                         {conversations.map((conv) => {
-                            return <div onClick={() => setCurrentChat(conv)} key={conv._id}>
-                                <Conversation conversation={conv} />
+                            return <div onClick={() => setCurrentChat(conv)} key={conv._id} >
+                                <Conversation
+                                    conversation={conv}
+                                    isSelected={currentChat?._id && currentChat?._id === conv._id}
+                                />
                             </div>
 
                         })}
