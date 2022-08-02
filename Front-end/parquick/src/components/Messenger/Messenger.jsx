@@ -17,6 +17,7 @@ function Messenger(): React.MixedElement {
     const [conversations, setConversations] = useState([])
     const [currentChat, setCurrentChat] = useState({});
     const [messages, setMessages] = useState([]);
+    const [isLoadingMessages, setIsLoadingMessages] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -39,12 +40,14 @@ function Messenger(): React.MixedElement {
     // Getting the messages fro the current chat
     useEffect(() => {
         if (currentChat._id) {
+            setIsLoadingMessages(true)
             client
                 .query({
                     query: GET_MESSAGES_FROM_THIS_CONVERSATION(currentChat._id),
                 })
                 .then((result) => {
                     setMessages(result.data.messageMany)
+                    setIsLoadingMessages(false);
                 });
         }
 
@@ -59,8 +62,11 @@ function Messenger(): React.MixedElement {
                     <div className="chat-menu-container">
                         <h3 className='conversations-title'>Conversations</h3>
                         {conversations.map((conv) => {
-                            return <div onClick={() => setCurrentChat(conv)} key={conv._id}>
-                                <Conversation conversation={conv} />
+                            return <div onClick={() => setCurrentChat(conv)} key={conv._id} >
+                                <Conversation
+                                    conversation={conv}
+                                    isSelected={currentChat?._id && currentChat?._id === conv._id}
+                                />
                             </div>
 
                         })}
@@ -70,20 +76,27 @@ function Messenger(): React.MixedElement {
                     <div className="chat-box-container">
                         {currentChat?._id ?
                             <>
-                                {messages?.length !== 0 ?
-                                    <div className="chatbox-messages">
-                                        {
-                                            messages.map((mes) => {
-                                                return <Message message={mes} own={user._id === mes.senderId} key={mes._id} />
-                                            })
-                                        }
-                                    </div>
-                                    :
-                                    <>
-                                        <span className="no-chatted-before">
-                                            {`V`} Send the first message. {`V`}
+                                {
+                                    isLoadingMessages ?
+                                        <span className="loading-messages">
+                                             Loading messages ...
                                         </span>
-                                    </>}
+                                        :
+
+                                        messages?.length !== 0 ?
+                                            <div className="chatbox-messages">
+                                                {
+                                                    messages.map((mes) => {
+                                                        return <Message message={mes} own={user._id === mes.senderId} key={mes._id} />
+                                                    })
+                                                }
+                                            </div>
+                                            :
+                                            <>
+                                                <span className="no-chatted-before">
+                                                    {`V`} Send the first message. {`V`}
+                                                </span>
+                                            </>}
                                 <div className="chatbox-input">
                                     <textarea
                                         className="chat-message-input"

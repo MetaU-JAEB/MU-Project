@@ -5,6 +5,9 @@
     cursor: pointer;
     margin-top: 20px;
   }
+  .conversation.selected {
+    background-color: rgba(245, 243, 243, 0.616);
+  }
 
   .conversation:hover {
     background-color: rgb(245, 243, 243);
