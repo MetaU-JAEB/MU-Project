@@ -1,5 +1,6 @@
 // @flow
 
+// created conversation type
 export type Conversation = {
     _id : string,
     user: {
