@@ -4,6 +4,7 @@ import type { BankCard } from "./BankCard";
 import { testCard } from "./BankCard";
 
 export type User = {
+    _id? : string,
     type: string,
     firstName: string,
     lastName: string,
@@ -18,6 +19,7 @@ export type User = {
 }
 
 export const emptyUser = {
+    _id : "",
     type: "",
     firstName: "",
     lastName: "",
@@ -30,6 +32,7 @@ export const emptyUser = {
 }
 
 export const testUser = {
+    _id : "12345",
     type: "Driver",
     firstName: "Jose",
     lastName: "Espinosa",

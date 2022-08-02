@@ -33,6 +33,7 @@ function Navbar(): React.MixedElement {
                                     </>
 
                             }
+                            <Link className='navbar-item' to="Messenger"> Messenger </Link>
                             <Link className='navbar-item' to="LogOut"> Log out </Link>
                         </>
                         :
