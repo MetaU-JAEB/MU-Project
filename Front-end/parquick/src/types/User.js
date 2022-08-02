@@ -32,7 +32,7 @@ export const emptyUser = {
 }
 
 export const testUser = {
-    _id : "12345",
+    _id : "62e41ad0dc5914ccb6b1124d",
     type: "Driver",
     firstName: "Jose",
     lastName: "Espinosa",

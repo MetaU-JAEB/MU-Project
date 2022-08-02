@@ -59,6 +59,19 @@ const Rent = mongoose.Schema({
     endsAt: mongoose.Schema.Types.Date
 }, { timestamps: true });
 
+// Chat
+
+const Conversation  = mongoose.Schema({
+    ownerId : mongoose.Schema.Types.ObjectId,
+    driverId : mongoose.Schema.Types.ObjectId,
+}, { timestamps: true });
+
+const Message  = mongoose.Schema({
+    conversationId : mongoose.Schema.Types.ObjectId,
+    text : String,
+    senderId : mongoose.Schema.Types.ObjectId
+}, { timestamps: true });
+
 
 // DEFINE USER SCHEMAS
 const User = new mongoose.Schema({
@@ -95,6 +108,9 @@ User.set('discriminatorKey', DKey);
 const UserModel = mongoose.model('User', User);
 const ParkingModel = mongoose.model('Parking', Parking);
 const RentModel = mongoose.model('Rent', Rent);
+// chat models
+const ConversationModel = mongoose.model('Conversation', Conversation);
+const MessageModel = mongoose.model('Message', Message);
 
 // create mongoose discriminator models
 const DriverModel = UserModel.discriminator(enumUserType.DRIVER, Driver);
@@ -112,6 +128,10 @@ const baseOptions = { // regular TypeConverterOptions, passed to composeMongoose
 const ParkingTC = composeWithMongoose(ParkingModel);
 const RentTC = composeWithMongoose(RentModel);
 
+// Chat
+const ConversationTC = composeWithMongoose(ConversationModel);
+const MessageTC = composeWithMongoose(MessageModel);
+
 
 // Discriminator Type Composers
 const UserDTC = composeWithMongooseDiscriminators(UserModel, baseOptions);
@@ -127,6 +147,24 @@ const driverTypeConverterOptions = {
 const DriverTC = UserDTC.discriminator(DriverModel, driverTypeConverterOptions);
 const OwnerTC = UserDTC.discriminator(OwnerModel);
 // baseOptions -> customizationsOptions applied
+
+
+// User Relations
+UserDTC.addRelation(
+    'conversations',
+    {
+        resolver: () => ConversationTC.getResolver('findMany'),
+        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+            filter: (user) => ({
+                OR : [
+                    {ownerId : user._id},
+                    {driverId : user._id},
+                ]
+            })
+        },
+        projection: { _id: 1 }, // required fields from User object, 1=true
+    },
+);
 
 // Owner relations
 OwnerTC.addRelation(
@@ -223,6 +261,73 @@ RentTC.addRelation(
         projection: { driverId: 1 }, // required fields from Rent object, 1=true
     },
 );
+
+
+// chat relations
+ConversationTC.addRelation(
+    'driver',
+    {
+        resolver: () => DriverTC.getResolver('findOne'),
+        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+            filter: (conversation) => ({
+                _id: conversation.driverId
+            })
+        },
+        projection: { driverId: 1 }, // required fields from Conversation object, 1=true
+    },
+);
+ConversationTC.addRelation(
+    'owner',
+    {
+        resolver: () => OwnerTC.getResolver('findOne'),
+        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+            filter: (conversation) => ({
+                _id: conversation.ownerId
+            })
+        },
+        projection: { ownerId: 1 }, // required fields from Conversation object, 1=true
+    },
+);
+ConversationTC.addRelation(
+    'messages',
+    {
+        resolver: () => MessageTC.getResolver('findMany'),
+        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+            filter: (conversation) => ({
+                conversationId: conversation._id
+            })
+        },
+        projection: { _id: 1 }, // required fields from Conversation object, 1=true
+    },
+);
+
+
+MessageTC.addRelation(
+    'conversation',
+    {
+        resolver: () => ConversationTC.getResolver('findOne'),
+        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+            filter: (message) => ({
+                _id: message.conversationId
+            })
+        },
+        projection: { conversationId: 1 }, // required fields from Message object, 1=true
+    },
+);
+MessageTC.addRelation(
+    'sender',
+    {
+        resolver: () => UserDTC.getResolver('findOne'),
+        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+            filter: (message) => ({
+                _id: message.senderId
+            })
+        },
+        projection: { senderId: 1 }, // required fields from Message object, 1=true
+    },
+);
+
+
 
 // Authentication
 
@@ -340,34 +445,63 @@ UserDTC.addResolver({
 
 // You may now use UserDTC to add fields to all Discriminators
 schemaComposer.Query.addFields({
+    // users
     driverMany: DriverTC.getResolver('findMany'),
     ownerMany: OwnerTC.getResolver('findMany'),
     userMany: UserDTC.getResolver('findMany'),
+
     parkingMany: ParkingTC.getResolver('findMany'),
     rentMany: RentTC.getResolver('findMany'),
+
+    // chat related
+    conversationMany: ConversationTC.getResolver('findMany'),
+    messageMany: MessageTC.getResolver('findMany'),
+
+    // users
     driverById: DriverTC.getResolver('findById'),
     ownerById: OwnerTC.getResolver('findById'),
     userById: UserDTC.getResolver('findById'),
+
     parkingById: ParkingTC.getResolver('findById'),
     rentById: RentTC.getResolver('findById'),
+
+    //caht related
+    conversationById: ConversationTC.getResolver('findById'),
+    messageById: MessageTC.getResolver('findById'),
 
 });
 // Use DriverTC, `OwnerTC as any other ObjectTypeComposer.
 schemaComposer.Mutation.addFields({
+    // creates users
     driverCreate: DriverTC.getResolver('createOne'),
     ownerCreate: OwnerTC.getResolver('createOne'),
     userCreate: UserDTC.getResolver('createOne'),
+
+    // creates
     parkingCreate: ParkingTC.getResolver('createOne'),
     rentCreate: RentTC.getResolver('createOne'),
 
+    // chat related
+    conversationCreate: ConversationTC.getResolver('createOne'),
+    messageCreate: MessageTC.getResolver('createOne'),
+
+
     parkingCreateMany: ParkingTC.getResolver('createMany'),
 
+    // updates users
     driverUpdate: DriverTC.getResolver('updateOne'),
     ownerUpdate: OwnerTC.getResolver('updateOne'),
     userUpdate: UserDTC.getResolver('updateOne'),
+
+    // updates
     parkingUpdate: ParkingTC.getResolver('updateOne'),
     rentUpdate: RentTC.getResolver('updateOne'),
 
+    // chat related
+    conversationUpdate: ConversationTC.getResolver('updateOne'),
+    messageUpdate: MessageTC.getResolver('updateOne'),
+
+    // hand-made
     userRegister: UserDTC.getResolver('userRegister'),
     userLogin: UserDTC.getResolver('userLogin')
 
