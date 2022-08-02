@@ -2,6 +2,7 @@
 import * as React from 'react'
 import './Message.css';
 import type {Message as MessageType}  from '../../../types/Message'
+import { format } from "timeago.js";
 
 type PropsMessage = {
     message : MessageType,
@@ -20,7 +21,7 @@ function Message({ message, own } : PropsMessage): React.MixedElement {
                 />
                 <p className="message-text">{message.text}</p>
             </div>
-            <div className="message-date">{(message.createdAt)}</div>
+            <div className="message-date">{format(message.createdAt)}</div>
         </div>
     </>
 }
