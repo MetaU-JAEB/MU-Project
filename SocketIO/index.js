@@ -26,9 +26,9 @@ io.on("connection", (socket) => {
     // add listener to event 'addUser'
     // take userId and socketId from user
     // publish the list of connected users
-    socket.on("addUserToConnected", (userId) => {
+    socket.on("user:add-to-connected-list", (userId) => {
         addUserToConnected(userId, socket.id);
-        io.emit("getConnectedUsers", connectedUsers);
+        io.emit("user:get-connected-list", connectedUsers);
     });
 
 });
