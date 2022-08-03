@@ -113,18 +113,17 @@ function Messenger(): React.MixedElement {
                                                 }
                                             </div>
                                             :
-                                            <>
-                                                <span className="no-chatted-before">
-                                                    {`V`} Send the first message. {`V`}
-                                                </span>
-                                            </>}
+                                            <span className="no-chatted-before">
+                                                {`V`} Send the first message. {`V`}
+                                            </span>
+                                }
                                 <div className="chatbox-input">
                                     <textarea
                                         className="chat-message-input"
                                         placeholder="write something..."
                                         onChange={(e) => setNewMessage(e.target.value)}
                                         value={newMessage}
-                                    ></textarea>
+                                    />
                                     <button
                                         className={newMessage !== "" ? "chat-submit-button" : "chat-submit-button no-message"}
                                         onClick={handleSubmit}
@@ -134,11 +133,9 @@ function Messenger(): React.MixedElement {
                                 </div>
                             </>
                             :
-                            <>
-                                <span className="no-chat-selected">
-                                    {`<==`} Open a conversation to start a chat.
-                                </span>
-                            </>
+                            <span className="no-chat-selected">
+                                {`<==`} Open a conversation to start a chat.
+                            </span>
                         }
                     </div>
                 </div>
