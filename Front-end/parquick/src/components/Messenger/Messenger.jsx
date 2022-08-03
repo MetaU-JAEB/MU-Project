@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react'
 import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 import { useUser } from '../../contexts/UserContext';
 import Conversation from './Conversation/Conversation';
 import Message from './Message/Message';
@@ -18,6 +19,17 @@ function Messenger(): React.MixedElement {
     const [currentChat, setCurrentChat] = useState({});
     const [messages, setMessages] = useState([]);
     const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+    const [socket, setSocket] = useState(null);
+
+    useEffect(()=>{
+        setSocket(io("ws://localhost:8900"))
+    },[])
+
+    useEffect(()=>{
+        socket?.on("welcome", (message) => {
+            console.log('message: ', message);
+        })
+    },[socket])
 
     // Fetching conversations for the user
     useEffect(() => {
