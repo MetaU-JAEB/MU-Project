@@ -12,3 +12,6 @@ export const MAP_ZOOM = {NEIGHBORHOOD: 15, CITY:10}
 
 // Own API
 export const API_URL = 'http://localhost:4000/graphql'
+
+// socket server URL
+export const SOCKET_SERVER_URL = "ws://localhost:8900"

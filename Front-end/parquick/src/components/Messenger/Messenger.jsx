@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react'
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
 import { useUser } from '../../contexts/UserContext';
 import Conversation from './Conversation/Conversation';
 import Message from './Message/Message';
@@ -9,6 +10,7 @@ import { client } from '../../queries/client';
 import { GET_MY_CONVERSATIONS } from '../../queries/conversation';
 import type { User } from "../../types/User";
 import { CREATE_MESSAGE_FROM_USER_TO_CONVERSATION, GET_MESSAGES_FROM_THIS_CONVERSATION } from '../../queries/message';
+import { SOCKET_SERVER_URL } from "../../utils/constants";
 
 function Messenger(): React.MixedElement {
 
@@ -18,6 +20,11 @@ function Messenger(): React.MixedElement {
     const [currentChat, setCurrentChat] = useState({});
     const [messages, setMessages] = useState([]);
     const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+    const socket = useRef();
+
+    useEffect(() => {
+        socket.current = io(SOCKET_SERVER_URL);
+    }, []);
 
     // Fetching conversations for the user
     useEffect(() => {
