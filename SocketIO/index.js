@@ -9,6 +9,4 @@ const io = new Server(8900, {
 
 io.on("connection", (socket) => {
     // Todo: everything
-    console.log("user connected")
-    io.emit("welcome","Hello, this is a hello world message")
 });
