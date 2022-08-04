@@ -17,14 +17,37 @@ function Messenger(): React.MixedElement {
     const { user } = useUser < User > ();
     const [newMessage, setNewMessage] = useState("");
     const [conversations, setConversations] = useState([])
-    const [currentChat, setCurrentChat] = useState({});
+    const [currentConversation, setCurrentConversation] = useState({});
     const [messages, setMessages] = useState([]);
     const [isLoadingMessages, setIsLoadingMessages] = useState(false);
     const socket = useRef();
+    const [arrivalMessage, setArrivalMessage] = useState(null);
 
     useEffect(() => {
         socket.current = io(SOCKET_SERVER_URL);
+        // Listener to order/event get-message
+        socket.current.on("message:get", (data) => {
+            setArrivalMessage({
+                senderId: data.senderId,
+                text: data.text,
+                createdAt: data.createdAt,
+                _id: data._id
+            });
+        });
+
     }, []);
+
+    // Displaying new message if it is for me
+    // and comes from the current conversation
+    useEffect(() => {
+        if (arrivalMessage) {
+            if (arrivalMessage.senderId == currentConversation.user._id) {
+                setMessages((prev) => {
+                    return [...prev, arrivalMessage]
+                })
+            }
+        }
+    }, [arrivalMessage, currentConversation]);
 
     // Fetching conversations for the user
     useEffect(() => {
@@ -39,40 +62,56 @@ function Messenger(): React.MixedElement {
         }
     }, [])
 
+    // sending user info to socket server
+    useEffect(() => {
+        if (user?._id && socket.current) {
+            socket.current.emit("user:add-to-connected-list", user._id);
+        }
+    }, [user, socket]);
+
     // Getting the messages fro the current chat
     useEffect(() => {
-        if (currentChat._id) {
+        if (currentConversation._id) {
             setIsLoadingMessages(true)
             client
                 .query({
-                    query: GET_MESSAGES_FROM_THIS_CONVERSATION(currentChat._id),
+                    query: GET_MESSAGES_FROM_THIS_CONVERSATION(currentConversation._id),
                 })
                 .then((result) => {
                     setMessages(result.data.messageMany)
                     setIsLoadingMessages(false);
                 });
         }
+    }, [currentConversation]);
 
-    }, [currentChat]);
+    const sendToSocketServer = (messageRecord) => {
+        const receiverId = currentConversation.user._id;
+        socket.current?.emit("message:send", {
+            senderId: user._id,
+            receiverId: receiverId,
+            text: newMessage,
+            _id: messageRecord._id,
+            createdAt: messageRecord.createdAt
+        });
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (currentChat?._id && user?._id && messages !== "") {
+        if (currentConversation?._id && user?._id && messages !== "") {
             client
                 .mutate({
                     mutation:
-                        CREATE_MESSAGE_FROM_USER_TO_CONVERSATION(currentChat._id, newMessage, user._id),
+                        CREATE_MESSAGE_FROM_USER_TO_CONVERSATION(currentConversation._id, newMessage, user._id),
                 })
                 .then((result) => {
-
                     setMessages((prev) => {
                         return [...prev, result.data.messageCreate.record]
                     })
-                    setNewMessage("")
+                    sendToSocketServer(result.data.messageCreate.record);
+                    setNewMessage("");
                 });
         }
-        // Todo : store the message
     };
 
     return (
@@ -83,10 +122,10 @@ function Messenger(): React.MixedElement {
                     <div className="chat-menu-container">
                         <h3 className='conversations-title'>Conversations</h3>
                         {conversations.map((conv) => {
-                            return <div onClick={() => setCurrentChat(conv)} key={conv._id} >
+                            return <div onClick={() => setCurrentConversation(conv)} key={conv._id} >
                                 <Conversation
                                     conversation={conv}
-                                    isSelected={currentChat?._id && currentChat?._id === conv._id}
+                                    isSelected={currentConversation?._id && currentConversation?._id === conv._id}
                                 />
                             </div>
 
@@ -95,7 +134,7 @@ function Messenger(): React.MixedElement {
                 </div>
                 <div className="chat-box">
                     <div className="chat-box-container">
-                        {currentChat?._id ?
+                        {currentConversation?._id ?
                             <>
                                 {
                                     isLoadingMessages ?
@@ -113,18 +152,17 @@ function Messenger(): React.MixedElement {
                                                 }
                                             </div>
                                             :
-                                            <>
-                                                <span className="no-chatted-before">
-                                                    {`V`} Send the first message. {`V`}
-                                                </span>
-                                            </>}
+                                            <span className="no-chatted-before">
+                                                {`V`} Send the first message. {`V`}
+                                            </span>
+                                }
                                 <div className="chatbox-input">
                                     <textarea
                                         className="chat-message-input"
                                         placeholder="write something..."
                                         onChange={(e) => setNewMessage(e.target.value)}
                                         value={newMessage}
-                                    ></textarea>
+                                    />
                                     <button
                                         className={newMessage !== "" ? "chat-submit-button" : "chat-submit-button no-message"}
                                         onClick={handleSubmit}
@@ -134,11 +172,9 @@ function Messenger(): React.MixedElement {
                                 </div>
                             </>
                             :
-                            <>
-                                <span className="no-chat-selected">
-                                    {`<==`} Open a conversation to start a chat.
-                                </span>
-                            </>
+                            <span className="no-chat-selected">
+                                {`<==`} Open a conversation to start a chat.
+                            </span>
                         }
                     </div>
                 </div>
