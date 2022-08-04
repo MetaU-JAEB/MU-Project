@@ -15,6 +15,31 @@ export const GET_PARKINGS = gql`
     }
 `;
 
+export const GET_PARKINGS_FOR_DRIVER = gql`
+      query ParkingMany {
+        parkingMany {
+          ubication {
+            lat
+            lng
+            address
+          }
+          price
+          dimensions {
+            heightFts
+            lengthFts
+            widthFts
+          }
+          isUnderShade
+          isInside
+          isWorking
+          totalLots
+          availableLots
+          _id
+        }
+      }
+`;
+
+
 export const GET_PARKING_BY_ID = (id) => {
     return gql`
     query ParkingById {
