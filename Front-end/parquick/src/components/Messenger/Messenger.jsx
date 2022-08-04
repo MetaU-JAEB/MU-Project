@@ -61,6 +61,17 @@ function Messenger(): React.MixedElement {
         }
     }, [currentConversation]);
 
+    const sendToSocketServer = (messageRecord) => {
+        const receiverId = currentConversation.user._id;
+        socket.current?.emit("message:send", {
+            senderId: user._id,
+            receiverId : receiverId,
+            text: newMessage,
+            _id : messageRecord._id,
+            createdAt : messageRecord.createdAt
+        });
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -74,6 +85,7 @@ function Messenger(): React.MixedElement {
                     setMessages((prev) => {
                         return [...prev, result.data.messageCreate.record]
                     })
+                    sendToSocketServer(result.data.messageCreate.record);
                     setNewMessage("");
                 });
         }
