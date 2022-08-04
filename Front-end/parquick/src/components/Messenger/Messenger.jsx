@@ -21,10 +21,33 @@ function Messenger(): React.MixedElement {
     const [messages, setMessages] = useState([]);
     const [isLoadingMessages, setIsLoadingMessages] = useState(false);
     const socket = useRef();
+    const [arrivalMessage, setArrivalMessage] = useState(null);
 
     useEffect(() => {
         socket.current = io(SOCKET_SERVER_URL);
+        // Listener to order/event get-message
+        socket.current.on("message:get", (data) => {
+            setArrivalMessage({
+                senderId: data.senderId,
+                text: data.text,
+                createdAt: data.createdAt,
+                _id: data._id
+            });
+        });
+
     }, []);
+
+    // Displaying new message if it is for me
+    // and comes from the current conversation
+    useEffect(() => {
+        if (arrivalMessage) {
+            if (arrivalMessage.senderId == currentConversation.user._id) {
+                setMessages((prev) => {
+                    return [...prev, arrivalMessage]
+                })
+            }
+        }
+    }, [arrivalMessage, currentConversation]);
 
     // Fetching conversations for the user
     useEffect(() => {
@@ -41,7 +64,7 @@ function Messenger(): React.MixedElement {
 
     // sending user info to socket server
     useEffect(() => {
-        if(user?._id && socket.current){
+        if (user?._id && socket.current) {
             socket.current.emit("user:add-to-connected-list", user._id);
         }
     }, [user, socket]);
@@ -65,10 +88,10 @@ function Messenger(): React.MixedElement {
         const receiverId = currentConversation.user._id;
         socket.current?.emit("message:send", {
             senderId: user._id,
-            receiverId : receiverId,
+            receiverId: receiverId,
             text: newMessage,
-            _id : messageRecord._id,
-            createdAt : messageRecord.createdAt
+            _id: messageRecord._id,
+            createdAt: messageRecord.createdAt
         });
     }
 
