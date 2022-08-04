@@ -12,6 +12,7 @@ query MyConversations{
       ${userType}Id: "${userId}"
     }) {
       user : ${otherUserType[userType]} {
+        _id
         firstName
         lastName
       }
