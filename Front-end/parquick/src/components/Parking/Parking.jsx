@@ -25,7 +25,7 @@ function Parking(): React.MixedElement {
             setParking(data.parkingById);
         }
     }, [data])
-
+    // Calling mutation
     const makeRent = async (todayDate, endDate) => {
         client
             .mutate({
@@ -35,7 +35,7 @@ function Parking(): React.MixedElement {
                 // Todo: create a conversation
             });
     }
-
+    // Getting date format
     function handleOnClickRent(event) {
         const todayDate = new Date().toLocaleDateString()
         const endDate = new Date(selectedDate).toLocaleDateString();
