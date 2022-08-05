@@ -5,7 +5,7 @@ import type { Ubication } from "./Ubication";
 
 export type Parking = {
     _id: string,
-    ubication?: Ubication,
+    ubication: Ubication,
     price?: number,
     images: Array<string>,
     dimensions: Dimensions,

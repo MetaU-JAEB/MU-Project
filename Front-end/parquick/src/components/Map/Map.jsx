@@ -9,10 +9,11 @@ import DriverLocation from '../DriverLocation/DriverLocation';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { MAP_CIRCLES_DISTANCES, MAP_DEFAULT_LOCATION, MAP_ZOOM } from '../../utils/constants'
-import { generateParkings } from "../../utils/testData";
-import type { LatLngLiteral } from "../../types/LatLngLiteral";
 import { mapsStyleOptions } from "../../utils/mapsStyleOptions";
 import { Link } from 'react-router-dom';
+import { client } from '../../queries/client';
+import { GET_PARKINGS_FOR_DRIVER } from '../../queries/parkingQueries';
+import type { Parking } from "../../types/Parking";
 
 type Props = {
     isLoaded: boolean
@@ -29,6 +30,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
     const [markerMap, setMarkerFMap] = useState({});
     const [infoIsOpen, setInfoIsOpen] = useState(false);
     const [selectedParking, setSelectedPlace] = useState(null);
+    const [parkings, setParkings] = useState([])
 
 
     const mapRef = useRef();
@@ -38,6 +40,23 @@ function Map({ isLoaded }: Props): React.MixedElement {
         clickableIcons: false,
     }), [])
 
+    const onLoad = useCallback((map) => (mapRef.current = map), []);
+
+
+    const fetchParkings = async () => {
+        let _parkings: Array<Parking> = [];
+        const result = await client
+            .query({
+                query: GET_PARKINGS_FOR_DRIVER,
+            })
+
+        _parkings = result?.data?.parkingMany;
+
+        setParkings(_parkings);
+    }
+    useEffect(() => {
+        fetchParkings();
+    }, [location])
 
     useEffect(() => {
         // TODO: Do something else when a new location is set by the user
@@ -69,20 +88,23 @@ function Map({ isLoaded }: Props): React.MixedElement {
             />)
     }, [directions])
 
-    const onLoad = useCallback((map) => (mapRef.current = map), []);
-    const parkings = useMemo(() => generateParkings(location), [location]);
 
-    const fetchDirections = (parking: LatLngLiteral) => {
+
+    const fetchDirections = (parking: Parking) => {
         if (!location) return;
 
         const service = new window.google.maps.DirectionsService();
 
         // TO FIX: After rendering a route, th eprevious one remains
         // Maybe I should use useRef for the renderer
+        const p_ubication = {
+            lat: Number(parking.ubication.lat),
+            lng: Number(parking.ubication.lng),
+        }
         service.route(
             {
                 origin: location,
-                destination: parking,
+                destination: p_ubication,
                 travelMode: window.google.maps.TravelMode.DRIVING,
             },
             (result, status) => {
@@ -96,9 +118,21 @@ function Map({ isLoaded }: Props): React.MixedElement {
 
     const markerLoadHandler = (marker, place) => {
         return setMarkerFMap(prevState => {
-            return { ...prevState, [place.id]: marker };
+            return { ...prevState, [place._id]: marker };
         });
     };
+    const markerHoverHandler = async (event, place) =>{
+        await setInfoIsOpen(false);
+        await setSelectedPlace(null);
+        await setInfoIsOpen(true);
+        await setSelectedPlace(place);
+        //await setIsJustOnHover(true);
+    }
+    const onLeave = async (event, place) =>{
+        await setInfoIsOpen(false);
+        await setSelectedPlace(null);
+        //await setIsJustOnHover(false);
+    }
     const markerClickHandler = async (event, place) => {
 
         await setInfoIsOpen(false);
@@ -114,12 +148,13 @@ function Map({ isLoaded }: Props): React.MixedElement {
 
         await setInfoIsOpen(true);
         await setSelectedPlace(place);
+        //await setIsJustOnHover(false);
 
         // If you want to zoom in a little on marker click
 
         // if you want to center the selected MarkerF
         //setCenter(place.pos)
-      };
+    };
 
     return <>
 
@@ -155,33 +190,58 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                 <MarkerClusterer>
                                     {(clusterer) =>
 
-                                        parkings.map((parking) => (
-                                            <MarkerF
-                                                key={parking.lat}
-                                                position={parking}
-                                                clusterer={clusterer}
-                                                title='parking'
-                                                onClick={async (event) => {
-                                                    fetchDirections(parking);
-                                                    await markerClickHandler(event, parking);
-                                                }}
-                                                onLoad={marker => markerLoadHandler(marker, parking)}
-                                            >
-                                            </MarkerF>
-                                        ))
+                                        parkings?.map((parking) => {
+
+                                            const p_ubication = {
+                                                lat: Number(parking.ubication.lat),
+                                                lng: Number(parking.ubication.lng),
+                                            }
+                                            return (
+                                                <MarkerF
+                                                    key={parking._id}
+                                                    position={p_ubication}
+                                                    clusterer={clusterer}
+                                                    title='parking'
+                                                    onClick={async (event) => {
+                                                        fetchDirections(parking);
+                                                        await markerClickHandler(event, parking);
+                                                    }}
+                                                    onLoad={marker => markerLoadHandler(marker, parking)}
+                                                    onMouseOver={ async (event) => {
+                                                        await markerHoverHandler(event, parking);
+                                                    }}
+                                                    onMouseOut={ async (event) => {
+                                                        await onLeave(event, parking);
+                                                    }}
+                                                >
+                                                </MarkerF>
+                                            )
+                                        })
                                     }
                                 </MarkerClusterer>
                                 {infoIsOpen && selectedParking && (
                                     <InfoWindowF
-                                        anchor={markerMap[selectedParking.id]}
+                                        anchor={markerMap[selectedParking._id]}
                                         onCloseClick={async () => await setInfoIsOpen(false)}
                                         zIndex={10}
                                     >
-                                        <div>
-                                            <h3>{`Parking Id: ${selectedParking.id}`}</h3>
-                                            <div>{`Lat: ${selectedParking.lat}, Lng: ${selectedParking.lng}`}</div>
-                                            <Link to={`/parking/${selectedParking.id}`}> Check Parking</Link>
-                                        </div>
+                                        {<div>
+                                            <h3>{`Parking Id: ${selectedParking._id}`}</h3>
+                                            <div className="parking-marker-picture">
+                                                <Link to={`parking/${selectedParking._id}`} >
+                                                    <img src={selectedParking.images[0]} alt="" className='parking-marker-img' />
+                                                </Link>
+                                            </div>
+                                            <h4>Address: {selectedParking.ubication.address}</h4>
+                                            {/* <div>{`Lat: ${selectedParking.ubication.lat}, Lng: ${selectedParking.ubication.lng}`}</div> */}
+                                            <div>
+                                                <p>Total lots: {selectedParking.totalLots}</p>
+                                                <p>Available lots: {selectedParking.availableLots}</p>
+                                                <p>{selectedParking.isUnderShade? "Under shade" : "Not under shade"}</p>
+                                            </div>
+                                            <Link to={`/parking/${selectedParking._id}`}> Check Parking</Link>
+                                        </div>}
+
                                     </InfoWindowF>
                                 )}
                                 {
