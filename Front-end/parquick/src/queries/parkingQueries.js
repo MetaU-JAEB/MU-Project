@@ -35,6 +35,7 @@ export const GET_PARKINGS_FOR_DRIVER = gql`
           totalLots
           availableLots
           _id
+          images
         }
       }
 `;
