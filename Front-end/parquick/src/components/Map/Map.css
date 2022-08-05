@@ -17,3 +17,7 @@
 .parking-marker-img:hover {
     opacity: 0.7;
   }
+
+  .click-advice{
+      font-size: smaller;
+  }

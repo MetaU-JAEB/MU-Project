@@ -29,8 +29,10 @@ function Map({ isLoaded }: Props): React.MixedElement {
     const [circles, setCircles] = useState < React.MixedElement > (<></>);
     const [markerMap, setMarkerFMap] = useState({});
     const [infoIsOpen, setInfoIsOpen] = useState(false);
-    const [selectedParking, setSelectedPlace] = useState(null);
+    const [selectedParking, setSelectedParking] = useState(null);
     const [parkings, setParkings] = useState([])
+    const [isHovering, setIsHovering] = useState(false);
+    const [hoveredParking, setHoveredParking] = useState(null)
 
 
     const mapRef = useRef();
@@ -116,44 +118,25 @@ function Map({ isLoaded }: Props): React.MixedElement {
         );
     };
 
-    const markerLoadHandler = (marker, place) => {
+    const markerLoadHandler = (marker, parking) => {
         return setMarkerFMap(prevState => {
-            return { ...prevState, [place._id]: marker };
+            return { ...prevState, [parking._id]: marker };
         });
     };
-    const markerHoverHandler = async (event, place) =>{
-        await setInfoIsOpen(false);
-        await setSelectedPlace(null);
-        await setInfoIsOpen(true);
-        await setSelectedPlace(place);
-        //await setIsJustOnHover(true);
+    const markerHoverHandler = (event, parking) =>{
+         setIsHovering(true);
+         setHoveredParking(parking);
     }
-    const onLeave = async (event, place) =>{
-        await setInfoIsOpen(false);
-        await setSelectedPlace(null);
-        //await setIsJustOnHover(false);
-    }
-    const markerClickHandler = async (event, place) => {
-
-        await setInfoIsOpen(false);
-        await setSelectedPlace(null);
-
-        // Remember which place was clicked
-
-
-        // Required so clicking a 2nd marker works as expected
-
-
-
-
-        await setInfoIsOpen(true);
-        await setSelectedPlace(place);
-        //await setIsJustOnHover(false);
-
-        // If you want to zoom in a little on marker click
-
-        // if you want to center the selected MarkerF
-        //setCenter(place.pos)
+    const markerHoverLeave = (event, parking) =>{
+        setIsHovering(false);
+        setHoveredParking(null);
+   }
+    const markerClickHandler = (event, parking) => {
+        // clean the previous window if selected a marker before
+         setInfoIsOpen(false);
+         setSelectedParking(null);
+         setInfoIsOpen(true);
+         setSelectedParking(parking);
     };
 
     return <>
@@ -185,8 +168,6 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                     icon={'./icons/car-icon.png'}
                                     title='You are here'
                                 />
-
-
                                 <MarkerClusterer>
                                     {(clusterer) =>
 
@@ -202,19 +183,18 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                                     position={p_ubication}
                                                     clusterer={clusterer}
                                                     title='parking'
-                                                    onClick={async (event) => {
+                                                    onClick={ (event) => {
                                                         fetchDirections(parking);
-                                                        await markerClickHandler(event, parking);
+                                                        markerClickHandler(event, parking);
                                                     }}
                                                     onLoad={marker => markerLoadHandler(marker, parking)}
-                                                    onMouseOver={ async (event) => {
-                                                        await markerHoverHandler(event, parking);
+                                                    onMouseOver={ (event) => {
+                                                        markerHoverHandler(event, parking);
                                                     }}
-                                                    onMouseOut={ async (event) => {
-                                                        await onLeave(event, parking);
+                                                    onMouseOut={ (event) => {
+                                                        markerHoverLeave(event, parking);
                                                     }}
-                                                >
-                                                </MarkerF>
+                                                />
                                             )
                                         })
                                     }
@@ -222,24 +202,37 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                 {infoIsOpen && selectedParking && (
                                     <InfoWindowF
                                         anchor={markerMap[selectedParking._id]}
-                                        onCloseClick={async () => await setInfoIsOpen(false)}
+                                        onCloseClick={ () =>setInfoIsOpen(false)}
                                         zIndex={10}
                                     >
                                         {<div>
-                                            <h3>{`Parking Id: ${selectedParking._id}`}</h3>
                                             <div className="parking-marker-picture">
                                                 <Link to={`parking/${selectedParking._id}`} >
                                                     <img src={selectedParking.images[0]} alt="" className='parking-marker-img' />
                                                 </Link>
                                             </div>
                                             <h4>Address: {selectedParking.ubication.address}</h4>
-                                            {/* <div>{`Lat: ${selectedParking.ubication.lat}, Lng: ${selectedParking.ubication.lng}`}</div> */}
                                             <div>
                                                 <p>Total lots: {selectedParking.totalLots}</p>
                                                 <p>Available lots: {selectedParking.availableLots}</p>
                                                 <p>{selectedParking.isUnderShade? "Under shade" : "Not under shade"}</p>
                                             </div>
-                                            <Link to={`/parking/${selectedParking._id}`}> Check Parking</Link>
+                                            <Link to={`/parking/${selectedParking._id}`}> Rent</Link>
+                                        </div>}
+
+                                    </InfoWindowF>
+                                )}
+                                {isHovering && hoveredParking && (
+                                    <InfoWindowF
+                                        anchor={markerMap[hoveredParking._id]}
+                                        onCloseClick={ () => setIsHovering(false)}
+                                        zIndex={10}
+                                    >
+                                        {<div>
+                                            <div>
+                                                <p>Available lots: {hoveredParking.availableLots}</p>
+                                                <p className='click-advice'>Click below for more info</p>
+                                            </div>
                                         </div>}
 
                                     </InfoWindowF>
@@ -247,10 +240,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
                                 {
                                     circles
                                 }
-
-
                             </>)
-
                             }
                         </GoogleMap>
                     </div>
