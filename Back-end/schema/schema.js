@@ -61,15 +61,15 @@ const Rent = mongoose.Schema({
 
 // Chat
 
-const Conversation  = mongoose.Schema({
-    ownerId : mongoose.Schema.Types.ObjectId,
-    driverId : mongoose.Schema.Types.ObjectId,
+const Conversation = mongoose.Schema({
+    ownerId: mongoose.Schema.Types.ObjectId,
+    driverId: mongoose.Schema.Types.ObjectId,
 }, { timestamps: true });
 
-const Message  = mongoose.Schema({
-    conversationId : mongoose.Schema.Types.ObjectId,
-    text : String,
-    senderId : mongoose.Schema.Types.ObjectId
+const Message = mongoose.Schema({
+    conversationId: mongoose.Schema.Types.ObjectId,
+    text: String,
+    senderId: mongoose.Schema.Types.ObjectId
 }, { timestamps: true });
 
 
@@ -156,9 +156,9 @@ UserDTC.addRelation(
         resolver: () => ConversationTC.getResolver('findMany'),
         prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
             filter: (user) => ({
-                OR : [
-                    {ownerId : user._id},
-                    {driverId : user._id},
+                OR: [
+                    { ownerId: user._id },
+                    { driverId: user._id },
                 ]
             })
         },
@@ -508,42 +508,5 @@ schemaComposer.Mutation.addFields({
 });
 
 const schema = schemaComposer.buildSchema();
-
-/* describe('createOne', () => {
-    it('should create child document without specifying DKey', async () => {
-        const res = await graphql.graphql({
-            schema,
-            source: `mutation CreateUsers {
-                        driverCreate(record: {name: "Queue XL", modelNumber: 360 }) {
-                            record {
-                            __typename
-                            type
-                            name
-                            modelNumber
-                            }
-                        }
-                        ownerCreate(record: {name: "mernxl", dob: 57275272}) {
-                            record {
-                            __typename
-                            type
-                            name
-                            dob
-                            }
-                        }
-                    }`
-        });
-        expect(res).toEqual({
-            data: {
-                driverCreate: {
-                    record: { __typename: 'Driver', type: 'Driver',
-                     name: 'Queue XL', modelNumber: 360 },
-                },
-                ownerCreate: {
-                    record: { __typename: 'Owner', type: 'Owner', name: 'mernxl', dob: 57275272 },
-                },
-            },
-        });
-    });
-}); */
 
 module.exports = schema;
