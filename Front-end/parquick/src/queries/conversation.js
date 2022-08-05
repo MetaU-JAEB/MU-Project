@@ -1,5 +1,4 @@
 //
-
 import { gql } from '@apollo/client';
 
 const otherUserType = { "driver": "owner", "owner": "driver" }
@@ -17,6 +16,30 @@ query MyConversations{
         lastName
       }
       _id
+    }
+  }
+`};
+
+export const CREATE_CONVERSATION = (driverId: string, ownerId: string) => {
+  return gql`
+  mutation ConversationCreate{
+    conversationCreate(record: {
+      ownerId: "${ownerId}",
+      driverId: "${driverId}"
+    }) {
+      record {
+        driver {
+          _id
+          firstName
+          lastName
+        }
+        owner {
+          _id
+          firstName
+          lastName
+        }
+        _id
+      }
     }
   }
 `};
