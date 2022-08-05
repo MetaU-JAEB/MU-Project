@@ -17,6 +17,11 @@ export const CREATE_RENT = (parkingId: string, driverId: string, startAt: string
             startAt
             endsAt
             _id
+            parking {
+                owner {
+                  _id
+                }
+              }
           }
         }
       }
