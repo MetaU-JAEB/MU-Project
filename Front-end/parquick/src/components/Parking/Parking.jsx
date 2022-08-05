@@ -8,6 +8,7 @@ import { GET_PARKING_BY_ID } from '../../queries/parkingQueries';
 import { client } from '../../queries/client';
 import { CREATE_RENT } from '../../queries/rent';
 import { useUser } from '../../contexts/UserContext';
+import { CREATE_CONVERSATION } from '../../queries/conversation';
 
 function Parking(): React.MixedElement {
     const { parkingId } = useParams();
@@ -25,17 +26,29 @@ function Parking(): React.MixedElement {
             setParking(data.parkingById);
         }
     }, [data])
-    // Calling mutation
-    const makeRent = async (todayDate, endDate) => {
+
+    const makeConversation = (driverId, ownerId) => {
+        client
+            .mutate({
+                mutation: CREATE_CONVERSATION(driverId, ownerId),
+            })
+            .then((result) => {
+                // Todo: Tell user the conversation was created
+            });
+    }
+
+    const makeRent = (todayDate, endDate) => {
         client
             .mutate({
                 mutation: CREATE_RENT(parkingId, user._id, todayDate, endDate),
             })
             .then((result) => {
-                // Todo: create a conversation
+                const driverId = result.data.rentCreate.record.driverId;
+                const ownerId = result.data.rentCreate.record.parking.owner._id;
+                makeConversation(driverId, ownerId)
             });
     }
-    // Getting date format
+
     function handleOnClickRent(event) {
         const todayDate = new Date().toLocaleDateString()
         const endDate = new Date(selectedDate).toLocaleDateString();
