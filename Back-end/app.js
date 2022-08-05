@@ -19,11 +19,11 @@ app.use(isAuth);
 
 const server = new ApolloServer({
   schema,
-  context : ({req}) => {
+  context: ({ req }) => {
     // Getting req from the middleware isAuth
     // if there is no user, there won't be user
     const user = req.user || null;
-    return { user: user, isAuth : req.isAuth };
+    return { user: user, isAuth: req.isAuth };
   },
 });
 
