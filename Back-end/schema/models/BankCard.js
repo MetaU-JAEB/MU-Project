@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
 
-const BankCard = mongoose.Schema({
+const BankCard = mongoose.Schema(
+  {
     number: String,
     expiration: String,
     CCV: String,
-}, { _id: false });
+  },
+  { _id: false },
+);
 
 module.exports = BankCard;

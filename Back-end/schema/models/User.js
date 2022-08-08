@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const { composeWithMongooseDiscriminators } = require('graphql-compose-mongoose');
+const {
+  composeWithMongooseDiscriminators,
+} = require('graphql-compose-mongoose');
 const BankCard = require('./BankCard');
 const Car = require('./Car');
 
@@ -9,19 +11,20 @@ const Car = require('./Car');
 const DKey = 'type';
 
 const enumUserType = {
-    OWNER: 'Owner',
-    DRIVER: 'Driver',
+  OWNER: 'Owner',
+  DRIVER: 'Driver',
 };
 
 /**
  * Define user schemas
  */
-const User = new mongoose.Schema({
+const User = new mongoose.Schema(
+  {
     type: {
-        type: String,
-        required: true,
-        enum: [enumUserType.OWNER, enumUserType.DRIVER],
-        description: 'User type Driver or Owner',
+      type: String,
+      required: true,
+      enum: [enumUserType.OWNER, enumUserType.DRIVER],
+      description: 'User type Driver or Owner',
     },
     firstName: String,
     lastName: String,
@@ -29,18 +32,20 @@ const User = new mongoose.Schema({
     password: String,
     phone: String,
     address: String,
-    cards: [BankCard]
-}, { timestamps: true });
+    cards: [BankCard],
+  },
+  { timestamps: true },
+);
 
 /**
  * Define discriminator schemas
  */
 const Driver = new mongoose.Schema({
-    cars: [Car]
+  cars: [Car],
 });
 
 const Owner = new mongoose.Schema({
-    parkingsIds: [mongoose.Schema.Types.ObjectId],
+  parkingsIds: [mongoose.Schema.Types.ObjectId],
 });
 
 /**
@@ -57,13 +62,13 @@ const DriverModel = UserModel.discriminator(enumUserType.DRIVER, Driver);
 const OwnerModel = UserModel.discriminator(enumUserType.OWNER, Owner);
 
 const baseOptions = {
-    /**
-     * Regular TypeConverterOptions, passed to composeMongoose
-     * example:
-     * fields: {
-     *   remove: ['parkings'],
-     * }
-     */
+  /**
+   * Regular TypeConverterOptions, passed to composeMongoose
+   * example:
+   * fields: {
+   *   remove: ['parkings'],
+   * }
+   */
 };
 
 /**
@@ -72,23 +77,23 @@ const baseOptions = {
 const UserDTC = composeWithMongooseDiscriminators(UserModel, baseOptions);
 
 const driverTypeConverterOptions = {
-    /**
-    * We can add custom options for each user type if we want
-    * this options will be merged with baseOptions
-    * example :
-    * fields: {
-    *     remove: ['makeDate'],
-    * },
-    */
+  /**
+   * We can add custom options for each user type if we want
+   * this options will be merged with baseOptions
+   * example :
+   * fields: {
+   *     remove: ['makeDate'],
+   * },
+   */
 };
 const DriverTC = UserDTC.discriminator(DriverModel, driverTypeConverterOptions);
 const OwnerTC = UserDTC.discriminator(OwnerModel);
 
 module.exports = {
-    UserModel: UserModel,
-    DriverModel: DriverModel,
-    OwnerModel: OwnerModel,
-    UserDTC: UserDTC,
-    DriverTC: DriverTC,
-    OwnerTC: OwnerTC
-}
+  UserModel: UserModel,
+  DriverModel: DriverModel,
+  OwnerModel: OwnerModel,
+  UserDTC: UserDTC,
+  DriverTC: DriverTC,
+  OwnerTC: OwnerTC,
+};
