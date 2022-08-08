@@ -10,7 +10,7 @@ const mongoURL = process.env.MONGO;
 mongoose.connect(mongoURL);
 mongoose.connection.once('open', () => {
   // eslint-disable-next-line no-console
-  console.log('Connected to databasee');
+  console.info('Connected to databasee');
 });
 
 const app = express();
@@ -32,6 +32,6 @@ const estart = async () => {
   server.applyMiddleware({ app });
 
   // eslint-disable-next-line no-console
-  app.listen({ port: 4000 }, () => console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`));
+  app.listen({ port: 4000 }, () => console.info(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`));
 };
 estart();

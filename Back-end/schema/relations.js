@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { UserModel, DriverModel, OwnerModel, UserDTC, OwnerTC, DriverTC } = require('./models/User');
+const { UserModel, UserDTC, OwnerTC, DriverTC } = require('./models/User');
 const { ParkingTC } = require('./models/Parking');
 const { RentTC } = require('./models/Rent');
 const { ConversationTC } = require('./models/Conversation');
@@ -91,32 +91,28 @@ UserDTC.addResolver({
         lastName: 'String!'
     },
     type: UserDTC.getResolver('updateById').getType(),
-    resolve: async ({ args, context }) => {
-        try {
-            let existUser = null;
-            if (isNaN(Number(args.email))) {
-                existUser = await UserModel.findOne({ email: args.email });
-            } else {
-                existUser = await UserModel.findOne({ phone: Number(args.email) });
-            }
-            if (existUser) {
-                throw new Error('User exists already.')
-            }
-            const hashedPassword = await bcrypt.hash(args.password, 12);
-            const newUser = new UserModel({
-                email: args.email,
-                password: hashedPassword,
-                type: args.type,
-                firstName: args.firstName,
-                lastName: args.lastName
-            });
-            const result = await newUser.save();
-            return {
-                recordId: result._id,
-                record: result
-            }
-        } catch (error) {
-            throw error;
+    resolve: async ({ args, /* context */ }) => {
+        let existUser = null;
+        if (isNaN(Number(args.email))) {
+            existUser = await UserModel.findOne({ email: args.email });
+        } else {
+            existUser = await UserModel.findOne({ phone: Number(args.email) });
+        }
+        if (existUser) {
+            throw new Error('User exists already.')
+        }
+        const hashedPassword = await bcrypt.hash(args.password, 12);
+        const newUser = new UserModel({
+            email: args.email,
+            password: hashedPassword,
+            type: args.type,
+            firstName: args.firstName,
+            lastName: args.lastName
+        });
+        const result = await newUser.save();
+        return {
+            recordId: result._id,
+            record: result
         }
     }
 })
@@ -136,7 +132,7 @@ UserDTC.addResolver({
         password: 'String!',
     },
     type: UserDTC.getResolver('updateById').getType(),
-    resolve: async ({ args, context }) => {
+    resolve: async ({ args, /* context */ }) => {
         let user = null;
         if (isNaN(Number(args.email))) {
             user = await UserModel.findOne({ email: args.email });
