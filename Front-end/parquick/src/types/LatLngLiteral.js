@@ -1,6 +1,6 @@
 // @flow
-export type LatLngLiteral ={
-    lat : number,
-    lng : number,
-    id : number
-}
+export type LatLngLiteral = {
+  lat: number,
+  lng: number,
+  id: number,
+};

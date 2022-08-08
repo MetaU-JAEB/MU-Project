@@ -1,48 +1,47 @@
 //
 import { gql } from '@apollo/client';
 export const GET_PARKINGS = gql`
-    query ParkingMany {
-        parkingMany {
-            images
-            price
-            availableLots
-            totalLots
-            _id
-            ubication {
-                address
-            }
-        }
+  query ParkingMany {
+    parkingMany {
+      images
+      price
+      availableLots
+      totalLots
+      _id
+      ubication {
+        address
+      }
     }
+  }
 `;
 
 export const GET_PARKINGS_FOR_DRIVER = gql`
-      query ParkingMany {
-        parkingMany {
-          ubication {
-            lat
-            lng
-            address
-          }
-          price
-          dimensions {
-            heightFts
-            lengthFts
-            widthFts
-          }
-          isUnderShade
-          isInside
-          isWorking
-          totalLots
-          availableLots
-          _id
-          images
-        }
+  query ParkingMany {
+    parkingMany {
+      ubication {
+        lat
+        lng
+        address
       }
+      price
+      dimensions {
+        heightFts
+        lengthFts
+        widthFts
+      }
+      isUnderShade
+      isInside
+      isWorking
+      totalLots
+      availableLots
+      _id
+      images
+    }
+  }
 `;
 
-
-export const GET_PARKING_BY_ID = (id) => {
-    return gql`
+export const GET_PARKING_BY_ID = id => {
+  return gql`
     query ParkingById {
         parkingById(_id: "${id}") {
           _id
@@ -56,14 +55,13 @@ export const GET_PARKING_BY_ID = (id) => {
         }
       }
     `;
-}
-
+};
 
 // casting for graphql, but returning just the string, not the gql
-export const MAKE_PARKING_STRING = (parking) => {
-    return `
+export const MAKE_PARKING_STRING = parking => {
+  return `
     {
-        "images": [${parking.images.map((img)=>`"${img}"`)}],
+        "images": [${parking.images.map(img => `"${img}"`)}],
         "ownerId": "${parking.ownerId}",
         "ubication": {
           "lat": "${parking.ubication.lat}",
@@ -83,4 +81,4 @@ export const MAKE_PARKING_STRING = (parking) => {
         "availableLots": ${parking.availableLots}
       },
     `;
-}
+};

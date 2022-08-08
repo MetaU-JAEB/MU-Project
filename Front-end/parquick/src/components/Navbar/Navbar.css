@@ -1,15 +1,15 @@
-.navbar{
-    display: flex;
-    margin-bottom: 40px;
+.navbar {
+  display: flex;
+  margin-bottom: 40px;
 }
-.navbar-left{
-    flex: 1;
+.navbar-left {
+  flex: 1;
 }
-.navbar-right{
-    flex: 4;
-    text-align: end;
-    padding-right: 20px;
+.navbar-right {
+  flex: 4;
+  text-align: end;
+  padding-right: 20px;
 }
-.navbar-item{
-    margin: 10px;
+.navbar-item {
+  margin: 10px;
 }

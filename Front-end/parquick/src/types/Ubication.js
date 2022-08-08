@@ -1,7 +1,7 @@
 // @flow
 
 export type Ubication = {
-    lat : string,
-    lng : string,
-    address : string
-}
+  lat: string,
+  lng: string,
+  address: string,
+};

@@ -1,67 +1,69 @@
-.messenger{
-    display: flex;
+.messenger {
+  display: flex;
 }
 
 .chat-menu {
-    flex: 1;
+  flex: 1;
 }
 
 .chat-box {
-    flex: 4;
+  flex: 4;
 }
-.chat-menu-container{
-    padding: 10px;
-    background: rgba(161, 161, 161, 0.233);
+.chat-menu-container {
+  padding: 10px;
+  background: rgba(161, 161, 161, 0.233);
 }
-.chat-box-container{
-    padding: 10px;
-    background: rgba(161, 161, 161, 0.5);
+.chat-box-container {
+  padding: 10px;
+  background: rgba(161, 161, 161, 0.5);
 }
 
 .chat-box-messages {
-    height: 100%;
-    overflow-y: scroll;
-    padding-right: 10px;
-  }
+  height: 100%;
+  overflow-y: scroll;
+  padding-right: 10px;
+}
 
-  .chat-box-input {
-    margin-top: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+.chat-box-input {
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-  .chat-message-input {
-    width: 80%;
-    height: 90px;
-    padding: 10px;
-  }
+.chat-message-input {
+  width: 80%;
+  height: 90px;
+  padding: 10px;
+}
 
-  .chat-submit-button {
-    width: 70px;
-    height: 40px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: rgb(69, 120, 165);
-    color: white;
-  }
-  .chat-submit-button.no-message {
-    background-color: rgb(146, 155, 161);
-    color: white;
-    cursor: default;
-  }
+.chat-submit-button {
+  width: 70px;
+  height: 40px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: rgb(69, 120, 165);
+  color: white;
+}
+.chat-submit-button.no-message {
+  background-color: rgb(146, 155, 161);
+  color: white;
+  cursor: default;
+}
 
-  .chat-submit-button:hover {
-    background-color: rgb(95, 168, 231);
-  }
-  .chat-submit-button.no-message:hover {
-    background-color: rgb(146, 155, 161);
-  }
+.chat-submit-button:hover {
+  background-color: rgb(95, 168, 231);
+}
+.chat-submit-button.no-message:hover {
+  background-color: rgb(146, 155, 161);
+}
 
-  .no-chat-selected, .no-chatted-before, .loading-messages {
-    margin: 20px auto;
-    font-size: 50px;
-    color: rgba(71, 71, 109, 0.582);
-    cursor: default;
-  }
+.no-chat-selected,
+.no-chatted-before,
+.loading-messages {
+  margin: 20px auto;
+  font-size: 50px;
+  color: rgba(71, 71, 109, 0.582);
+  cursor: default;
+}
