@@ -36,6 +36,10 @@ const estart = async () => {
   server.applyMiddleware({ app });
 
   // eslint-disable-next-line no-console
-  app.listen({ port: 4000 }, () => console.info(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`));
+  app.listen({ port: 4000 }, () =>
+    console.info(
+      `🚀 Server ready at http://localhost:4000${server.graphqlPath}`,
+    ),
+  );
 };
 estart();
