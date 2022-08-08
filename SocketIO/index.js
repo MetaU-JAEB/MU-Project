@@ -26,20 +26,19 @@ const removeUserFromConnected = (socketId) => {
    connectedUsers = connectedUsers.filter((user) => user.socketId !== socketId);
 };
 
-
+/* when a connection happens */
 io.on("connection", (socket) => {
-
-   // when a connection happens
-
-   // add listener to order add-user
-   // take userId from user
-   // publish the list of connected users
+   /**
+    * Add listener to order add-user.
+    * Take userId from user.
+    * Publish the list of connected users
+    */
    socket.on("user:add-to-connected-list", (userId) => {
        addUserToConnected(userId, socket.id);
        io.emit("user:get-connected-list", connectedUsers);
    });
 
-   //send and get message
+   /* Send and get message */
    socket.on("message:send", ({ senderId, receiverId, text, _id, createdAt }) => {
        const receiver = getUser(receiverId);
        io.to(receiver.socketId).emit("message:get", {
@@ -51,11 +50,9 @@ io.on("connection", (socket) => {
        });
    });
 
-
-   // disconnection
+   /* disconnection */
    socket.on("disconnect", () => {
        removeUserFromConnected(socket.id);
        io.emit("user:get-connected-list", connectedUsers);
    });
-
 });
