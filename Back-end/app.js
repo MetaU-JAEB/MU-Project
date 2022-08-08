@@ -10,7 +10,7 @@ const mongoURL = process.env.MONGO;
 mongoose.connect(mongoURL);
 mongoose.connection.once('open', () => {
   // eslint-disable-next-line no-console
-  console.info('Connected to databasee');
+  console.info('Connected to database');
 });
 
 const app = express();
