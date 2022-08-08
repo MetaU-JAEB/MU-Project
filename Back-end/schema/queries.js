@@ -1,29 +1,41 @@
-const { UserDTC,DriverTC, OwnerTC, ParkingTC, RentTC, ConversationTC, MessageTC  } = require('./relations')
-// Getting objects after the relations are applied
-const queries = {
-    // users
-    driverMany: DriverTC.getResolver('findMany'),
-    ownerMany: OwnerTC.getResolver('findMany'),
+const { UserDTC, DriverTC, OwnerTC, ParkingTC, RentTC, ConversationTC, MessageTC } = require('./relations')
+/**
+ *  Getting objects after relations are applied
+ */
+
+const userQueries = {
     userMany: UserDTC.getResolver('findMany'),
-
-    parkingMany: ParkingTC.getResolver('findMany'),
-    rentMany: RentTC.getResolver('findMany'),
-
-    // chat related
-    conversationMany: ConversationTC.getResolver('findMany'),
-    messageMany: MessageTC.getResolver('findMany'),
-
-    // users
-    driverById: DriverTC.getResolver('findById'),
-    ownerById: OwnerTC.getResolver('findById'),
     userById: UserDTC.getResolver('findById'),
 
-    parkingById: ParkingTC.getResolver('findById'),
-    rentById: RentTC.getResolver('findById'),
+    driverMany: DriverTC.getResolver('findMany'),
+    driverById: DriverTC.getResolver('findById'),
 
-    //chat related
+    ownerMany: OwnerTC.getResolver('findMany'),
+    ownerById: OwnerTC.getResolver('findById'),
+}
+const parkingQueries = {
+    parkingMany: ParkingTC.getResolver('findMany'),
+    parkingById: ParkingTC.getResolver('findById'),
+}
+const rentQueries = {
+    rentMany: RentTC.getResolver('findMany'),
+    rentById: RentTC.getResolver('findById'),
+}
+const conversationQueries = {
+    conversationMany: ConversationTC.getResolver('findMany'),
     conversationById: ConversationTC.getResolver('findById'),
+}
+const messageQueries = {
+    messageMany: MessageTC.getResolver('findMany'),
     messageById: MessageTC.getResolver('findById'),
+}
+
+const queries = {
+    ...userQueries,
+    ...parkingQueries,
+    ...rentQueries,
+    ...conversationQueries,
+    ...messageQueries,
 }
 
 module.exports = queries;

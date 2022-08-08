@@ -6,12 +6,17 @@ const { RentTC } = require('./models/Rent');
 const { ConversationTC } = require('./models/Conversation');
 const { MessageTC } = require('./models/Message');
 
-// User Relations
+/**
+ * User Relations
+ */
 UserDTC.addRelation(
     'conversations',
     {
+        /**
+         * Resolver `findMany` has `filter` arg, we may provide mongoose query to it
+         */
         resolver: () => ConversationTC.getResolver('findMany'),
-        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+        prepareArgs: {
             filter: (user) => ({
                 OR: [
                     { ownerId: user._id },
@@ -19,21 +24,26 @@ UserDTC.addRelation(
                 ]
             })
         },
-        projection: { _id: 1 }, // required fields from User object, 1=true
+        /**
+         * Required fields from User object, 1=true
+         */
+        projection: { _id: 1 },
     },
 );
 
-// Owner relations
+/**
+ * Owner Relations
+ */
 OwnerTC.addRelation(
     'parkings',
     {
         resolver: () => ParkingTC.getResolver('findMany'),
-        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+        prepareArgs: {
             filter: (owner) => ({
                 ownerId: owner._id,
             })
         },
-        projection: { _id: 1 }, // required fields from Owner object, 1=true
+        projection: { _id: 1 },
     },
 );
 
@@ -41,31 +51,35 @@ OwnerTC.addRelation(
     'parkingsWithShade',
     {
         resolver: () => ParkingTC.getResolver('findMany'),
-        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+        prepareArgs: {
             filter: (owner) => ({
                 ownerId: owner._id,
                 isUnderShade: 1
             })
         },
-        projection: { _id: 1 }, // required fields from Owner object, 1=true
+        projection: { _id: 1 },
     },
 );
 
-/// Driver Relations
+/**
+ * Driver Relations
+ */
 DriverTC.addRelation(
     'rents',
     {
         resolver: () => RentTC.getResolver('findMany'),
-        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+        prepareArgs: {
             filter: (driver) => ({
                 driverId: driver._id
             })
         },
-        projection: { _id: 1 }, // required fields from Driver object, 1=true
+        projection: { _id: 1 },
     },
 );
 
-// Login/register
+/**
+ * Login/Register
+ */
 UserDTC.addResolver({
     kind: 'mutation',
     name: 'userRegister',
@@ -164,17 +178,22 @@ UserDTC.addResolver({
     }
 })
 
-//Parking Relations
+/**
+ * Parking Relations
+ */
 ParkingTC.addRelation(
     'owner',
     {
+        /**
+         * Resolver `findOne` has `filter` arg, we may provide mongoose query to it
+         */
         resolver: () => OwnerTC.getResolver('findOne'),
-        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+        prepareArgs: {
             filter: (parking) => ({
                 _id: parking.ownerId
             })
         },
-        projection: { ownerId: 1 }, // required fields from Parking object, 1=true
+        projection: { ownerId: 1 },
     },
 );
 
@@ -191,17 +210,19 @@ ParkingTC.addRelation(
     },
 );
 
-//Rent relations
+/**
+ * Rent Relations
+ */
 RentTC.addRelation(
     'parking',
     {
         resolver: () => ParkingTC.getResolver('findOne'),
-        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+        prepareArgs: {
             filter: (rent) => ({
                 _id: rent.parkingId
             })
         },
-        projection: { parkingId: 1 }, // required fields from Rent object, 1=true
+        projection: { parkingId: 1 },
     },
 );
 
@@ -209,26 +230,28 @@ RentTC.addRelation(
     'driver',
     {
         resolver: () => DriverTC.getResolver('findOne'),
-        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+        prepareArgs: {
             filter: (rent) => ({
                 _id: rent.driverId
             })
         },
-        projection: { driverId: 1 }, // required fields from Rent object, 1=true
+        projection: { driverId: 1 },
     },
 );
 
-// chat relations
+/**
+ * Chat Relations
+ */
 ConversationTC.addRelation(
     'driver',
     {
         resolver: () => DriverTC.getResolver('findOne'),
-        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+        prepareArgs: {
             filter: (conversation) => ({
                 _id: conversation.driverId
             })
         },
-        projection: { driverId: 1 }, // required fields from Conversation object, 1=true
+        projection: { driverId: 1 },
     },
 );
 
@@ -236,12 +259,12 @@ ConversationTC.addRelation(
     'owner',
     {
         resolver: () => OwnerTC.getResolver('findOne'),
-        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+        prepareArgs: {
             filter: (conversation) => ({
                 _id: conversation.ownerId
             })
         },
-        projection: { ownerId: 1 }, // required fields from Conversation object, 1=true
+        projection: { ownerId: 1 },
     },
 );
 
@@ -249,12 +272,12 @@ ConversationTC.addRelation(
     'messages',
     {
         resolver: () => MessageTC.getResolver('findMany'),
-        prepareArgs: { // resolver `findMany` has `filter` arg, we may provide mongoose query to it
+        prepareArgs: {
             filter: (conversation) => ({
                 conversationId: conversation._id
             })
         },
-        projection: { _id: 1 }, // required fields from Conversation object, 1=true
+        projection: { _id: 1 },
     },
 );
 
@@ -262,12 +285,12 @@ MessageTC.addRelation(
     'conversation',
     {
         resolver: () => ConversationTC.getResolver('findOne'),
-        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+        prepareArgs: {
             filter: (message) => ({
                 _id: message.conversationId
             })
         },
-        projection: { conversationId: 1 }, // required fields from Message object, 1=true
+        projection: { conversationId: 1 },
     },
 );
 
@@ -275,12 +298,12 @@ MessageTC.addRelation(
     'sender',
     {
         resolver: () => UserDTC.getResolver('findOne'),
-        prepareArgs: { // resolver `findOne` has `filter` arg, we may provide mongoose query to it
+        prepareArgs: {
             filter: (message) => ({
                 _id: message.senderId
             })
         },
-        projection: { senderId: 1 }, // required fields from Message object, 1=true
+        projection: { senderId: 1 },
     },
 );
 
