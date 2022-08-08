@@ -1,32 +1,31 @@
-
 .parking-card-img {
-    border: 1px solid grey;
-    width: 100%;
-    opacity: 1;
-    transition: opacity 0.1s;
-  }
+  border: 1px solid grey;
+  width: 100%;
+  opacity: 1;
+  transition: opacity 0.1s;
+}
 .parking-card-img:hover {
-    opacity: 0.7;
-  }
-
-.parking-card{
-    border: 1px solid rgb(71, 71, 71);
-    margin: 30px auto;
-    padding: 5px;
-    width: 90%;
-    max-height: 50vh;
-    overflow-wrap: break-word;
-    transition: width 0.2s;
-}
-.parking-card:hover{
-    width: 98%;
+  opacity: 0.7;
 }
 
-.image-container{
-    border: 1px solid grey;
-    width: 100%;
-    height: 200px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
+.parking-card {
+  border: 1px solid rgb(71, 71, 71);
+  margin: 30px auto;
+  padding: 5px;
+  width: 90%;
+  max-height: 50vh;
+  overflow-wrap: break-word;
+  transition: width 0.2s;
+}
+.parking-card:hover {
+  width: 98%;
+}
+
+.image-container {
+  border: 1px solid grey;
+  width: 100%;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

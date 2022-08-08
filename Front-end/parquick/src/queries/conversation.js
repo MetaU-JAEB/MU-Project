@@ -1,11 +1,11 @@
 //
 import { gql } from '@apollo/client';
 
-const otherUserType = { "driver": "owner", "owner": "driver" }
+const otherUserType = { driver: 'owner', owner: 'driver' };
 
 // Getting queries for a certain user
 export const GET_MY_CONVERSATIONS = (userType: string, userId: string) => {
-    return gql`
+  return gql`
 query MyConversations{
     conversationMany(filter: {
       ${userType}Id: "${userId}"
@@ -18,7 +18,8 @@ query MyConversations{
       _id
     }
   }
-`};
+`;
+};
 
 export const CREATE_CONVERSATION = (driverId: string, ownerId: string) => {
   return gql`
@@ -42,4 +43,5 @@ export const CREATE_CONVERSATION = (driverId: string, ownerId: string) => {
       }
     }
   }
-`};
+`;
+};
