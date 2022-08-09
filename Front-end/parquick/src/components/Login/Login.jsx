@@ -48,7 +48,7 @@ function Login(): React.MixedElement {
         onChange={e => setEmail(e.target.value)}
       />
       <input
-        type="text"
+        type="password"
         name="password"
         id="password"
         placeholder="password"
