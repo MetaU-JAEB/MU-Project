@@ -13,7 +13,6 @@ function Conversation({
   isSelected,
 }: PropsConversation): React.MixedElement {
   return (
-    <>
       <div className={isSelected ? 'conversation selected' : 'conversation'}>
         <img
           className="conversation-img"
@@ -22,7 +21,6 @@ function Conversation({
         />
         <span className="conversation-name">{`${conversation.user.firstName} ${conversation.user.lastName}`}</span>
       </div>
-    </>
   );
 }
 
