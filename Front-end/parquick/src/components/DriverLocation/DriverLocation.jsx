@@ -15,10 +15,6 @@ import {
 import '@reach/combobox/styles.css';
 import { useState } from 'react';
 
-/* type Props = {
-    setLocation: (position : google.maps.LatLngLiteral) => void;
-} */
-
 function DriverLocation({ setLocation }): React.MixedElement {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,8 +36,10 @@ function DriverLocation({ setLocation }): React.MixedElement {
     setIsLoading(false);
   };
 
-  // Function to handle on click and get user location
-  // Enabling High Accuracy took more time to fetch
+  /**
+   * Function to handle on click and get user location
+   * Enabling High Accuracy took more time to fetch
+   */
   const handleGetCurrentLocation = () => {
     const options = {
       enableHighAccuracy: false,
