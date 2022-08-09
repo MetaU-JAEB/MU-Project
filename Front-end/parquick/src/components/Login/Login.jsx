@@ -1,4 +1,4 @@
-//
+// @flow
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
@@ -38,33 +38,31 @@ function Login(): React.MixedElement {
   }
 
   return (
-    <>
-      <form action="#">
-        <input
-          type="text"
-          name="e-mail"
-          id="e-mail"
-          placeholder="e-mail"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-        <input
-          type="text"
-          name="password"
-          id="password"
-          placeholder="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
-        <button
-          type="submit"
-          onClick={handleOnSubmitLogin}
-          disabled={email === '' || password === ''}
-        >
-          Login
-        </button>
-      </form>
-    </>
+    <form action="#">
+      <input
+        type="text"
+        name="e-mail"
+        id="e-mail"
+        placeholder="e-mail"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+      />
+      <input
+        type="text"
+        name="password"
+        id="password"
+        placeholder="password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+      />
+      <button
+        type="submit"
+        onClick={handleOnSubmitLogin}
+        disabled={email === '' || password === ''}
+      >
+        Login
+      </button>
+    </form>
   );
 }
 
