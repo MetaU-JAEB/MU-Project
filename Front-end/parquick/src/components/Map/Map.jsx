@@ -67,6 +67,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
 
     setParkings(_parkings);
   };
+
   useEffect(() => {
     fetchParkings();
   }, [location]);
@@ -120,7 +121,7 @@ function Map({ isLoaded }: Props): React.MixedElement {
 
     const service = new window.google.maps.DirectionsService();
 
-    // TO FIX: After rendering a route, th eprevious one remains
+    // TO FIX: After rendering a route, the previous one remains
     // Maybe I should use useRef for the renderer
     const p_ubication = {
       lat: Number(parking.ubication.lat),
@@ -155,11 +156,114 @@ function Map({ isLoaded }: Props): React.MixedElement {
     setHoveredParking(null);
   };
   const markerClickHandler = (event, parking) => {
-    // clean the previous window if selected a marker before
+    /* clean the previous window if selected a marker before */
     setInfoIsOpen(false);
     setSelectedParking(null);
     setInfoIsOpen(true);
     setSelectedParking(parking);
+  };
+
+  /**
+   * Many variables are used among the next components
+   * so I choosed to keep them here in this file
+   */
+  const ParkingMarkers = (): React.MixedElement => {
+    return (
+      <MarkerClusterer>
+        {clusterer =>
+          parkings?.map(parking => {
+            const p_ubication = {
+              lat: Number(parking.ubication.lat),
+              lng: Number(parking.ubication.lng),
+            };
+            return (
+              <MarkerF
+                key={parking._id}
+                position={p_ubication}
+                clusterer={clusterer}
+                title="parking"
+                onClick={event => {
+                  fetchDirections(parking);
+                  markerClickHandler(event, parking);
+                }}
+                onLoad={marker => markerLoadHandler(marker, parking)}
+                onMouseOver={event => {
+                  markerHoverHandler(event, parking);
+                }}
+                onMouseOut={event => {
+                  markerHoverLeave(event, parking);
+                }}
+              />
+            );
+          })
+        }
+      </MarkerClusterer>
+    );
+  };
+
+  const CurrentPositionMarker = (): React.MixedElement => {
+    return (
+      <MarkerF
+        zIndex={15}
+        position={location}
+        icon={'./icons/car-icon.png'}
+        title="You are here"
+      />
+    );
+  };
+
+  const InfoWindowDetailed = () => {
+    return (
+      infoIsOpen &&
+      selectedParking && (
+        <InfoWindowF
+          anchor={markerMap[selectedParking._id]}
+          onCloseClick={() => setInfoIsOpen(false)}
+          zIndex={10}
+        >
+          <div>
+            <div className="parking-marker-picture">
+              <Link to={`parking/${selectedParking._id}`}>
+                <img
+                  src={selectedParking.images[0]}
+                  alt=""
+                  className="parking-marker-img"
+                />
+              </Link>
+            </div>
+            <h4>Address: {selectedParking.ubication.address}</h4>
+            <div>
+              <p>Total lots: {selectedParking.totalLots}</p>
+              <p>Available lots: {selectedParking.availableLots}</p>
+              <p>
+                {selectedParking.isUnderShade
+                  ? 'Under shade'
+                  : 'Not under shade'}
+              </p>
+            </div>
+            <Link to={`/parking/${selectedParking._id}`}>Rent</Link>
+          </div>
+        </InfoWindowF>
+      )
+    );
+  };
+
+  const InfoWindowSimple = () => {
+    return (
+      isHovering &&
+      hoveredParking && (
+        <InfoWindowF
+          anchor={markerMap[hoveredParking._id]}
+          onCloseClick={() => setIsHovering(false)}
+          zIndex={10}
+        >
+          <div>
+            <p>Available lots: {hoveredParking.availableLots}</p>
+            <p className="click-advice">Click below for more info</p>
+          </div>
+        </InfoWindowF>
+      )
+    );
   };
 
   return (
@@ -184,100 +288,10 @@ function Map({ isLoaded }: Props): React.MixedElement {
               {Direcciones}
               {location && (
                 <>
-                  <MarkerF
-                    zIndex={15}
-                    position={location}
-                    icon={'./icons/car-icon.png'}
-                    title="You are here"
-                  />
-                  <MarkerClusterer>
-                    {clusterer =>
-                      parkings?.map(parking => {
-                        const p_ubication = {
-                          lat: Number(parking.ubication.lat),
-                          lng: Number(parking.ubication.lng),
-                        };
-                        return (
-                          <MarkerF
-                            key={parking._id}
-                            position={p_ubication}
-                            clusterer={clusterer}
-                            title="parking"
-                            onClick={event => {
-                              fetchDirections(parking);
-                              markerClickHandler(event, parking);
-                            }}
-                            onLoad={marker =>
-                              markerLoadHandler(marker, parking)
-                            }
-                            onMouseOver={event => {
-                              markerHoverHandler(event, parking);
-                            }}
-                            onMouseOut={event => {
-                              markerHoverLeave(event, parking);
-                            }}
-                          />
-                        );
-                      })
-                    }
-                  </MarkerClusterer>
-                  {infoIsOpen && selectedParking && (
-                    <InfoWindowF
-                      anchor={markerMap[selectedParking._id]}
-                      onCloseClick={() => setInfoIsOpen(false)}
-                      zIndex={10}
-                    >
-                      {
-                        <div>
-                          <div className="parking-marker-picture">
-                            <Link to={`parking/${selectedParking._id}`}>
-                              <img
-                                src={selectedParking.images[0]}
-                                alt=""
-                                className="parking-marker-img"
-                              />
-                            </Link>
-                          </div>
-                          <h4>Address: {selectedParking.ubication.address}</h4>
-                          <div>
-                            <p>Total lots: {selectedParking.totalLots}</p>
-                            <p>
-                              Available lots: {selectedParking.availableLots}
-                            </p>
-                            <p>
-                              {selectedParking.isUnderShade
-                                ? 'Under shade'
-                                : 'Not under shade'}
-                            </p>
-                          </div>
-                          <Link to={`/parking/${selectedParking._id}`}>
-                            {' '}
-                            Rent
-                          </Link>
-                        </div>
-                      }
-                    </InfoWindowF>
-                  )}
-                  {isHovering && hoveredParking && (
-                    <InfoWindowF
-                      anchor={markerMap[hoveredParking._id]}
-                      onCloseClick={() => setIsHovering(false)}
-                      zIndex={10}
-                    >
-                      {
-                        <div>
-                          <div>
-                            <p>
-                              Available lots: {hoveredParking.availableLots}
-                            </p>
-                            <p className="click-advice">
-                              Click below for more info
-                            </p>
-                          </div>
-                        </div>
-                      }
-                    </InfoWindowF>
-                  )}
+                  {CurrentPositionMarker()}
+                  {ParkingMarkers()}
+                  {InfoWindowDetailed()}
+                  {InfoWindowSimple()}
                   {circles}
                 </>
               )}

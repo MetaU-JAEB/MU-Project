@@ -24,17 +24,8 @@ function Main(): React.MixedElement {
 
   return (
     <>
-      {user.type === 'Owner' ? (
-        <>
-          <MainOwner />
-        </>
-      ) : user.type === 'Driver' ? (
-        <>
-          <MainDriver />
-        </>
-      ) : (
-        <></>
-      )}
+      {user.type === 'Owner' && <MainOwner />}
+      {user.type === 'Driver' && <MainDriver />}
     </>
   );
 }

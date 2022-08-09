@@ -27,7 +27,7 @@ function Messenger(): React.MixedElement {
 
   useEffect(() => {
     socket.current = io(SOCKET_SERVER_URL);
-    // Listener to order/event get-message
+    /* Listener to order/event get-message */
     socket.current.on('message:get', data => {
       setArrivalMessage({
         senderId: data.senderId,
@@ -38,8 +38,10 @@ function Messenger(): React.MixedElement {
     });
   }, []);
 
-  // Displaying new message if it is for me
-  // and comes from the current conversation
+  /**
+   * Displaying new message if it is for me
+   * and comes from the current conversation
+   */
   useEffect(() => {
     if (arrivalMessage) {
       if (arrivalMessage.senderId == currentConversation.user._id) {
@@ -50,7 +52,7 @@ function Messenger(): React.MixedElement {
     }
   }, [arrivalMessage, currentConversation]);
 
-  // Fetching conversations for the user
+  /* Fetching conversations for the user */
   useEffect(() => {
     if (user?.type && user?._id) {
       client
@@ -63,14 +65,14 @@ function Messenger(): React.MixedElement {
     }
   }, []);
 
-  // sending user info to socket server
+  /* sending user info to socket server */
   useEffect(() => {
     if (user?._id && socket.current) {
       socket.current.emit('user:add-to-connected-list', user._id);
     }
   }, [user, socket]);
 
-  // Getting the messages fro the current chat
+  /* Getting the messages fro the current chat */
   useEffect(() => {
     if (currentConversation._id) {
       setIsLoadingMessages(true);
@@ -119,81 +121,76 @@ function Messenger(): React.MixedElement {
   };
 
   return (
-    <>
-      <div className="messenger">
-        <div className="chat-menu">
-          <div className="chat-menu-container">
-            <h3 className="conversations-title">Conversations</h3>
-            {conversations.map(conv => {
-              return (
-                <div
-                  onClick={() => setCurrentConversation(conv)}
-                  key={conv._id}
-                >
-                  <Conversation
-                    conversation={conv}
-                    isSelected={
-                      currentConversation?._id &&
-                      currentConversation?._id === conv._id
-                    }
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="chat-box">
-          <div className="chat-box-container">
-            {currentConversation?._id ? (
-              <>
-                {isLoadingMessages ? (
-                  <span className="loading-messages">Loading messages ...</span>
-                ) : messages?.length !== 0 ? (
-                  <div className="chatbox-messages">
-                    {messages.map(mes => {
-                      return (
-                        <Message
-                          message={mes}
-                          own={user._id === mes.senderId}
-                          key={mes._id}
-                        />
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <span className="no-chatted-before">
-                    {`V`} Send the first message. {`V`}
-                  </span>
-                )}
-                <div className="chatbox-input">
-                  <textarea
-                    className="chat-message-input"
-                    placeholder="write something..."
-                    onChange={e => setNewMessage(e.target.value)}
-                    value={newMessage}
-                  />
-                  <button
-                    className={
-                      newMessage !== ''
-                        ? 'chat-submit-button'
-                        : 'chat-submit-button no-message'
-                    }
-                    onClick={handleSubmit}
-                    disabled={newMessage == '' ? true : false}
-                  >
-                    Send
-                  </button>
-                </div>
-              </>
-            ) : (
-              <span className="no-chat-selected">
-                {`<==`} Open a conversation to start a chat.
-              </span>
-            )}
-          </div>
+    <div className="messenger">
+      <div className="chat-menu">
+        <div className="chat-menu-container">
+          <h3 className="conversations-title">Conversations</h3>
+          {conversations.map(conv => {
+            return (
+              <div onClick={() => setCurrentConversation(conv)} key={conv._id}>
+                <Conversation
+                  conversation={conv}
+                  isSelected={
+                    currentConversation?._id &&
+                    currentConversation?._id === conv._id
+                  }
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
-    </>
+      <div className="chat-box">
+        <div className="chat-box-container">
+          {currentConversation?._id ? (
+            <>
+              {isLoadingMessages ? (
+                <span className="loading-messages">Loading messages ...</span>
+              ) : messages?.length !== 0 ? (
+                <div className="chatbox-messages">
+                  {messages.map(mes => {
+                    return (
+                      <Message
+                        message={mes}
+                        own={user._id === mes.senderId}
+                        key={mes._id}
+                      />
+                    );
+                  })}
+                </div>
+              ) : (
+                <span className="no-chatted-before">
+                  {`V`} Send the first message. {`V`}
+                </span>
+              )}
+              <div className="chatbox-input">
+                <textarea
+                  className="chat-message-input"
+                  placeholder="write something..."
+                  onChange={e => setNewMessage(e.target.value)}
+                  value={newMessage}
+                />
+                <button
+                  className={
+                    newMessage !== ''
+                      ? 'chat-submit-button'
+                      : 'chat-submit-button no-message'
+                  }
+                  onClick={handleSubmit}
+                  disabled={newMessage == '' ? true : false}
+                >
+                  Send
+                </button>
+              </div>
+            </>
+          ) : (
+            <span className="no-chat-selected">
+              {`<==`} Open a conversation to start a chat.
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 

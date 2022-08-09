@@ -10,7 +10,6 @@ function LogOut(): React.MixedElement {
   const navigate = useNavigate();
 
   function logout() {
-    // TODO : delete current user Data
     setUser({ logged: false });
     navigate('/Login');
   }
@@ -19,11 +18,7 @@ function LogOut(): React.MixedElement {
     logout();
   }, []);
 
-  return (
-    <>
-      <p>Logout</p>
-    </>
-  );
+  return <p>Logout</p>;
 }
 
 export default LogOut;

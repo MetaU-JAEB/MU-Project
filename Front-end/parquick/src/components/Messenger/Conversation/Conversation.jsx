@@ -13,16 +13,14 @@ function Conversation({
   isSelected,
 }: PropsConversation): React.MixedElement {
   return (
-    <>
-      <div className={isSelected ? 'conversation selected' : 'conversation'}>
-        <img
-          className="conversation-img"
-          src="https://picsum.photos/id/222/408/485"
-          alt="Other Profile"
-        />
-        <span className="conversation-name">{`${conversation.user.firstName} ${conversation.user.lastName}`}</span>
-      </div>
-    </>
+    <div className={isSelected ? 'conversation selected' : 'conversation'}>
+      <img
+        className="conversation-img"
+        src="https://picsum.photos/id/222/408/485"
+        alt="Other Profile"
+      />
+      <span className="conversation-name">{`${conversation.user.firstName} ${conversation.user.lastName}`}</span>
+    </div>
   );
 }
 
