@@ -24,6 +24,7 @@ function Messenger(): React.MixedElement {
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const socket = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     socket.current = io(SOCKET_SERVER_URL);
@@ -86,6 +87,10 @@ function Messenger(): React.MixedElement {
         });
     }
   }, [currentConversation]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const sendToSocketServer = messageRecord => {
     const receiverId = currentConversation.user._id;
@@ -150,11 +155,12 @@ function Messenger(): React.MixedElement {
                 <div className="chat-box-messages">
                   {messages.map(mes => {
                     return (
-                      <Message
-                        message={mes}
-                        own={user._id === mes.senderId}
-                        key={mes._id}
-                      />
+                      <div ref={scrollRef} key={mes._id}>
+                        <Message
+                          message={mes}
+                          own={user._id === mes.senderId}
+                        />
+                      </div>
                     );
                   })}
                 </div>
