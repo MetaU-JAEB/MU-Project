@@ -1,7 +1,7 @@
 .message {
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
+  margin: 5px 0px;
   align-items: flex-start;
 }
 
@@ -29,7 +29,8 @@
 
 .message-date {
   font-size: 12px;
-  margin-top: 10px;
+  font-weight: 300;
+  margin-top: -10px;
 }
 
 .message.own {
