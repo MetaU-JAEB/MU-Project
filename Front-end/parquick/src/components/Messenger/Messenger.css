@@ -55,6 +55,8 @@
 }
 textarea.chat-message-input {
   resize: none;
+  width: 100%;
+  margin-right: 15px;
 }
 
 .chat-submit-button {
