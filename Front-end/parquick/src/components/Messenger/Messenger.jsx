@@ -147,7 +147,7 @@ function Messenger(): React.MixedElement {
               {isLoadingMessages ? (
                 <span className="loading-messages">Loading messages ...</span>
               ) : messages?.length !== 0 ? (
-                <div className="chatbox-messages">
+                <div className="chat-box-messages">
                   {messages.map(mes => {
                     return (
                       <Message
@@ -163,7 +163,7 @@ function Messenger(): React.MixedElement {
                   {`V`} Send the first message. {`V`}
                 </span>
               )}
-              <div className="chatbox-input">
+              <div className="chat-box-input">
                 <textarea
                   className="chat-message-input"
                   placeholder="write something..."
