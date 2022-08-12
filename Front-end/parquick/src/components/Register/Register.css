@@ -2,3 +2,72 @@
   margin: 20px;
   display: inline;
 }
+.form-container {
+  max-width: 500px;
+  width: 100%;
+  margin: 100px auto;
+  box-shadow: 0 0 5px #ccc;
+}
+
+.register-form {
+  display: block;
+  position: relative;
+}
+
+.register-form:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  z-index: 1;
+  background-image: linear-gradient(to bottom right, #bbbbbb, #4d4d4d);
+}
+
+form .inner-form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 50px;
+  z-index: 2;
+}
+
+.btn-register {
+  width: 100px;
+  background: rgb(22, 40, 80);
+  color: white;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 25px;
+  margin: auto;
+  margin-top: 30px;
+}
+
+.btn-register:hover {
+  background: rgb(48, 71, 122);
+}
+.btn-register:active {
+  background: rgb(80, 103, 153);
+}
+.btn-register.inactive {
+  background: rgb(184, 194, 214);
+  cursor: default;
+}
+
+.input-register {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  height: 30px;
+  width: 300px;
+}
+.input-label {
+  text-align: left;
+}
+
+.register-form fieldset{
+  margin-top: 20px;
+}
