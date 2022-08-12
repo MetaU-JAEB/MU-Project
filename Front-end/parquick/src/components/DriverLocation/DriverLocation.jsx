@@ -83,7 +83,7 @@ function DriverLocation({ setLocation }): React.MixedElement {
             onChange={e => setValue(e.target.value)}
             disabled={!ready}
             className="combobox-input"
-            placeholder="Search office address"
+            placeholder="Search location"
           />
           <ComboboxPopover>
             <ComboboxList>

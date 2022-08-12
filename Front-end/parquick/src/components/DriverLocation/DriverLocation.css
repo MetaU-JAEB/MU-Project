@@ -1,7 +1,27 @@
-.btn-get-curr-locat:hover {
-  background-color: darkcyan;
+
+.btn-get-curr-locat {
+  background: rgb(30, 78, 110);
+  color: white;
+  outline: none;
+  border: none;
   cursor: pointer;
+  padding: 10px 25px;
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+.btn-get-curr-locat:hover {
+  background: rgb(56, 115, 155);
 }
 .btn-get-curr-locat:active {
-  background-color: white;
+  background: rgb(100, 138, 153);
+}
+
+.driver-search-location{
+  margin-bottom: 30px;
+}
+
+.combobox-input{
+  margin-top: 10px;
+  width: 300px;
+  height: 30px;
 }

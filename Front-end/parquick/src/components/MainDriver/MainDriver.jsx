@@ -8,7 +8,6 @@ import './MainDriver.css';
 const librariesMaps = ['places'];
 
 function MainDriver(): React.MixedElement {
-  const [address, setAddress] = useState('');
   const [filter, setFilter] = useState('');
 
   const { isLoaded } = useLoadScript({
@@ -17,31 +16,15 @@ function MainDriver(): React.MixedElement {
   });
 
   useEffect(() => {
-    // TODO: when the address changes, maps should recommend other parkings
-  }, [address]);
-  useEffect(() => {
     // TODO: display parkings based on the new filter requested
   }, [filter]);
 
-  function handleOnChangeAddress(event) {
-    setAddress(event.target.value);
-  }
   function handlerOnChangeRadioFilter(event) {
     setFilter(event.target.value);
   }
 
   return (
     <>
-      <div className="driver-search-address">
-        <label htmlFor="driver-address"> Search</label>
-        <input
-          type="text"
-          name="driver-address"
-          placeholder="Address"
-          value={address}
-          onChange={handleOnChangeAddress}
-        />
-      </div>
       <div className="driver-filter-options">
         <div className="radio-filter">
           <input
