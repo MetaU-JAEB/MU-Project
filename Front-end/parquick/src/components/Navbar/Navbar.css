@@ -1,6 +1,19 @@
 .navbar {
   display: flex;
   margin-bottom: 40px;
+  background-color: #1b1b1b;
+  padding: 15px;
+  height: 30px;
+}
+.navbar a{
+  text-decoration: none;
+  color: rgb(230, 230, 230);
+}
+.navbar a:hover{
+  color: rgb(117, 181, 255);
+}
+.navbar a:active{
+  color: rgb(35, 137, 255);
 }
 .navbar-left {
   flex: 1;
@@ -11,5 +24,12 @@
   padding-right: 20px;
 }
 .navbar-item {
-  margin: 10px;
+  margin: 20px;
+  vertical-align: middle;
+  font-size: larger;
+}
+.navbar-logo{
+  text-transform: uppercase;
+  font-weight: bolder;
+  font-size: x-large;
 }

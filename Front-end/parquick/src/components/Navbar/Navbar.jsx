@@ -62,7 +62,7 @@ function Navbar(): React.MixedElement {
     <div className="navbar">
       <div className="navbar-left logo">
         <Link className="navbar-item navbar-logo" to="/">
-          Logo
+          Parquick
         </Link>
       </div>
       <div className="navbar-right">
