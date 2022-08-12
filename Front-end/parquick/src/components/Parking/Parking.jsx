@@ -18,6 +18,7 @@ function Parking(): React.MixedElement {
     new Date().toLocaleDateString(),
   );
   const { loading, error, data } = useQuery(GET_PARKING_BY_ID(parkingId));
+  const [indexSelected, setIndexSelected] = useState(0);
 
   useEffect(() => {}, [parkingId]);
 
@@ -55,6 +56,22 @@ function Parking(): React.MixedElement {
     makeRent(todayDate, endDate);
   }
 
+  const DetailsThumb = images => {
+    return (
+      <div className="thumb">
+        {images.map((img, index) => (
+          <img
+            src={img}
+            alt=""
+            key={index}
+            onClick={() => setIndexSelected(index)}
+            className={indexSelected == index ? 'active' : ''}
+          />
+        ))}
+      </div>
+    );
+  };
+
   if (loading) return <p> Loading ...</p>;
   if (error) return <p>Error</p>;
 
@@ -62,24 +79,42 @@ function Parking(): React.MixedElement {
     <>
       {parking && (
         <>
-          <p>id : {parking._id}</p>
-          <div className="park-images">
-            {parking.images.map(image => {
-              return <img src={`${image}`} key={image}></img>;
-            })}
+          <div className="product">
+            <div className="details" key={parking._id}>
+              <div className="big-img">
+                <img src={parking?.images[indexSelected]} alt="" />
+              </div>
+
+              <div className="box">
+                <div className="row">
+                  <h2>${parking.price}</h2>
+                  <span>{`${parking.totalLots} available`}</span>
+                </div>
+
+                <p>{parking.ubication.address}</p>
+                <p className="option-shade">
+                  {parking.isUnderShade ? 'Is under shade' : 'Not under shade'}
+                </p>
+                <p className="option-outside">
+                  {parking.isInside ? 'Is inside a building' : 'Is outside'}
+                </p>
+                {DetailsThumb(parking.images)}
+                <button className="cart" onClick={handleOnClickRent}>Rent today</button>
+              </div>
+            </div>
           </div>
-          <p>Address : {parking.ubication.address}</p>
-          <p>Price : ${parking.price}</p>
-          <label htmlFor="rent-until">Rent until</label>
-          <input
-            type="date"
-            name="rento-until"
-            id=""
-            value={selectedDate}
-            onChange={e => setSelectedDate(e.target.value)}
-          />
-          <br />
-          <button onClick={handleOnClickRent}>Rent</button>
+          <div className='box'>
+            <h4>Or rent until</h4>
+            <input
+              type="date"
+              name="rent-until"
+              id=""
+              value={selectedDate}
+              onChange={e => setSelectedDate(e.target.value)}
+            />
+            <br />
+            <button className='cart' onClick={handleOnClickRent}>Rent</button>
+          </div>
         </>
       )}
     </>
