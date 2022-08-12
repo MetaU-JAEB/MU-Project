@@ -31,7 +31,14 @@
   overflow-wrap: break-word;
   overflow: scroll;
 }
-
+.progress {
+	background-color: #d8d8d8;
+	border-radius: 20px;
+	position: relative;
+	margin: 15px 0;
+	height: 25px;
+	width: 100%;
+}
 .progress-used {
   background: linear-gradient(to left, #4d505c, #b5b9c3);
   box-shadow: 0 3px 3px -5px #99999944, 0 2px 5px #99999944;
