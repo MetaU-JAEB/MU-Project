@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Parking.css';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
@@ -18,7 +19,10 @@ function Parking(): React.MixedElement {
     new Date().toLocaleDateString(),
   );
   const { loading, error, data } = useQuery(GET_PARKING_BY_ID(parkingId));
-  const [indexSelected, setIndexSelected] = useState(0);
+  const [imgIndexSelected, setImgIndexSelected] = useState(0);
+  const [isCreatingRent, setIsCreatingRent] = useState(false);
+  const [isCreatingConversation, setIsCreatingConversation] = useState(false);
+  const [conversationCreated, setConversationCreated] = useState(null);
 
   useEffect(() => {}, [parkingId]);
 
@@ -29,21 +33,26 @@ function Parking(): React.MixedElement {
   }, [data]);
 
   const makeConversation = (driverId, ownerId) => {
+    setIsCreatingConversation(true);
     client
       .mutate({
         mutation: CREATE_CONVERSATION(driverId, ownerId),
       })
       .then(result => {
+        setIsCreatingConversation(false);
+        setConversationCreated(result.data.conversationCreate.record);
         // Todo: Tell user the conversation was created
       });
   };
 
   const makeRent = (todayDate, endDate) => {
+    setIsCreatingRent(true);
     client
       .mutate({
         mutation: CREATE_RENT(parkingId, user._id, todayDate, endDate),
       })
       .then(result => {
+        setIsCreatingRent(false);
         const driverId = result.data.rentCreate.record.driverId;
         const ownerId = result.data.rentCreate.record.parking.owner._id;
         makeConversation(driverId, ownerId);
@@ -64,12 +73,18 @@ function Parking(): React.MixedElement {
             src={img}
             alt=""
             key={index}
-            onClick={() => setIndexSelected(index)}
-            className={indexSelected == index ? 'active' : ''}
+            onClick={() => setImgIndexSelected(index)}
+            className={imgIndexSelected == index ? 'active' : ''}
           />
         ))}
       </div>
     );
+  };
+
+  const loadingStatus = () => {
+    if (isCreatingRent) return <p> Creating Rent...</p>;
+    if (isCreatingConversation) return <p> Creating Conversation...</p>;
+    return <></>;
   };
 
   if (loading) return <p> Loading ...</p>;
@@ -82,7 +97,7 @@ function Parking(): React.MixedElement {
           <div className="product">
             <div className="details" key={parking._id}>
               <div className="big-img">
-                <img src={parking?.images[indexSelected]} alt="" />
+                <img src={parking?.images[imgIndexSelected]} alt="" />
               </div>
 
               <div className="box">
@@ -99,11 +114,13 @@ function Parking(): React.MixedElement {
                   {parking.isInside ? 'Is inside a building' : 'Is outside'}
                 </p>
                 {DetailsThumb(parking.images)}
-                <button className="cart" onClick={handleOnClickRent}>Rent today</button>
+                <button className="cart" onClick={handleOnClickRent}>
+                  Rent today
+                </button>
               </div>
             </div>
           </div>
-          <div className='box'>
+          <div className="box">
             <h4>Or rent until</h4>
             <input
               type="date"
@@ -113,8 +130,16 @@ function Parking(): React.MixedElement {
               onChange={e => setSelectedDate(e.target.value)}
             />
             <br />
-            <button className='cart' onClick={handleOnClickRent}>Rent</button>
+            <button className="cart" onClick={handleOnClickRent}>
+              Rent
+            </button>
           </div>
+          {loadingStatus()}
+          {conversationCreated && (
+            <Link to={`/Messenger/${conversationCreated._id}`}>
+              <button className="btn-rent talk">Talk to the owner</button>
+            </Link>
+          )}
         </>
       )}
     </>

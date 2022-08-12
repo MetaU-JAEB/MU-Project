@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { useUser } from '../../contexts/UserContext';
 import Conversation from './Conversation/Conversation';
@@ -16,6 +17,7 @@ import {
 import { SOCKET_SERVER_URL } from '../../utils/constants';
 
 function Messenger(): React.MixedElement {
+  const { conversationId } = useParams();
   const { user } = useUser<User>();
   const [newMessage, setNewMessage] = useState('');
   const [conversations, setConversations] = useState([]);
@@ -24,7 +26,8 @@ function Messenger(): React.MixedElement {
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const socket = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
-  const scrollRef = useRef(null);
+  const scrollRefChat = useRef(null);
+  const scrollRefConv = useRef([]);
 
   useEffect(() => {
     socket.current = io(SOCKET_SERVER_URL);
@@ -66,6 +69,14 @@ function Messenger(): React.MixedElement {
     }
   }, []);
 
+  useEffect(() => {
+    if (conversationId !== '' && conversations) {
+      setCurrentConversation(
+        conversations.find(conv => conv._id == conversationId) || {},
+      );
+    }
+  }, [conversations, conversationId]);
+
   /* sending user info to socket server */
   useEffect(() => {
     if (user?._id && socket.current) {
@@ -75,25 +86,33 @@ function Messenger(): React.MixedElement {
 
   /* Getting the messages fro the current chat */
   useEffect(() => {
-    if (currentConversation._id) {
-      setIsLoadingMessages(true);
-      client
-        .query({
-          query: GET_MESSAGES_FROM_THIS_CONVERSATION(currentConversation._id),
-        })
-        .then(result => {
-          setMessages(result.data.messageMany);
-          setIsLoadingMessages(false);
-        });
-    }
+    if (!currentConversation?._id) return;
+
+    setIsLoadingMessages(true);
+    client
+      .query({
+        query: GET_MESSAGES_FROM_THIS_CONVERSATION(currentConversation._id),
+      })
+      .then(result => {
+        setMessages(result.data.messageMany);
+        setIsLoadingMessages(false);
+      });
   }, [currentConversation]);
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollRefChat.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    if (currentConversation?._id) {
+      scrollRefConv.current[currentConversation?._id]?.scrollIntoView({
+        behavior: 'smooth',
+      });
+    }
+  }, [currentConversation]);
+
   const sendToSocketServer = messageRecord => {
-    const receiverId = currentConversation.user._id;
+    const receiverId = currentConversation?.user._id;
     socket.current?.emit('message:send', {
       senderId: user._id,
       receiverId: receiverId,
@@ -130,19 +149,25 @@ function Messenger(): React.MixedElement {
       <div className="chat-menu">
         <div className="chat-menu-container">
           <h3 className="conversations-title">Conversations</h3>
-          {conversations.map(conv => {
-            return (
-              <div onClick={() => setCurrentConversation(conv)} key={conv._id}>
-                <Conversation
-                  conversation={conv}
-                  isSelected={
-                    currentConversation?._id &&
-                    currentConversation?._id === conv._id
-                  }
-                />
-              </div>
-            );
-          })}
+          {conversations
+            .map(conv => {
+              return (
+                <div
+                  onClick={() => setCurrentConversation(conv)}
+                  key={conv._id}
+                  ref={elem => (scrollRefConv.current[conv._id] = elem)}
+                >
+                  <Conversation
+                    conversation={conv}
+                    isSelected={
+                      currentConversation?._id &&
+                      currentConversation?._id === conv._id
+                    }
+                  />
+                </div>
+              );
+            })
+            .reverse()}
         </div>
       </div>
       <div className="chat-box">
@@ -155,7 +180,7 @@ function Messenger(): React.MixedElement {
                 <div className="chat-box-messages">
                   {messages.map(mes => {
                     return (
-                      <div ref={scrollRef} key={mes._id}>
+                      <div ref={scrollRefChat} key={mes._id}>
                         <Message
                           message={mes}
                           own={user._id === mes.senderId}
