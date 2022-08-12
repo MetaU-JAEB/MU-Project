@@ -1,5 +1,18 @@
+.parking-card {
+  background-color: rgb(238, 238, 238);
+  border: 2px solid rgb(71, 71, 71, 0.2);
+  margin: 30px auto;
+  padding: 5px;
+  width: 90%;
+  box-shadow: 0 0 10px #ccc;
+  transition: width 0.2s;
+}
+.parking-card-picture{
+  height: 210px;
+  overflow: auto;
+  background-image: url(https://i.picsum.photos/id/952/536/644.jpg?hmac=axWnhgxwy7CLWSf2SY4hZdsBL0u-JD4tvMaM-vCJzxY);
+}
 .parking-card-img {
-  border: 1px solid grey;
   width: 100%;
   opacity: 1;
   transition: opacity 0.1s;
@@ -8,24 +21,63 @@
   opacity: 0.7;
 }
 
-.parking-card {
-  border: 1px solid rgb(71, 71, 71);
-  margin: 30px auto;
-  padding: 5px;
-  width: 90%;
-  max-height: 50vh;
-  overflow-wrap: break-word;
-  transition: width 0.2s;
-}
 .parking-card:hover {
   width: 98%;
 }
 
-.image-container {
-  border: 1px solid grey;
-  width: 100%;
-  height: 200px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+.parking-card-content {
+  padding: 15px;
+  text-align: justify;
+  overflow-wrap: break-word;
+  overflow: scroll;
+}
+
+.progress-used {
+  background: linear-gradient(to left, #4d505c, #b5b9c3);
+  box-shadow: 0 3px 3px -5px #99999944, 0 2px 5px #99999944;
+  border-radius: 20px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 0;
+  opacity: 0;
+  transition: 1s ease 0.3s;
+}
+.action-buttons{
+  margin: auto;
+  text-align: end;
+}
+.btn-update {
+  background: #333;
+  color: white;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 25px;
+  margin-top: 15px;
+}
+.btn-update:hover {
+  background: rgb(100, 100, 100);
+}
+.btn-update:active {
+  background: rgb(153, 153, 153);
+}
+
+.btn-delete {
+  background: rgb(80, 22, 22);
+  color: white;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 25px;
+  margin-top: 15px;
+  margin-left: 30px;
+}
+.btn-delete:hover {
+  background: rgb(122, 48, 45);
+}
+.btn-delete:active {
+  background: rgb(153, 104, 100);
 }
