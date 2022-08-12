@@ -43,6 +43,7 @@ function App(): React.MixedElement {
             <Route path="Login" element={<Login />} />
             <Route path="Register" element={<Register />} />
             <Route path="Messenger" element={<Messenger />} />
+            <Route path="Messenger/:conversationId" element={<Messenger />} />
             <Route path="parking/:parkingId" element={<Parking />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
