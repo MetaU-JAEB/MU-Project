@@ -38,31 +38,45 @@ function Login(): React.MixedElement {
   }
 
   return (
-    <form action="#">
-      <input
-        type="text"
-        name="e-mail"
-        id="e-mail"
-        placeholder="e-mail"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        name="password"
-        id="password"
-        placeholder="password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
-      <button
-        type="submit"
-        onClick={handleOnSubmitLogin}
-        disabled={email === '' || password === ''}
-      >
-        Login
-      </button>
-    </form>
+    <div className="form-container">
+      <form action="#" className="login-form">
+        <div className="inner-form">
+          <h1>Login</h1>
+          <label htmlFor="e-mail" className="input-label">
+            Name:
+          </label>
+          <input
+            type="text"
+            name="e-mail"
+            id="e-mail"
+            placeholder="email@email.com"
+            className="input-login"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+          />
+          <label htmlFor="password" className="input-label">
+            Password:
+          </label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="***"
+            className="input-login"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
+          <button
+            type="submit"
+            onClick={handleOnSubmitLogin}
+            className="btn-login"
+            disabled={email === '' || password === ''}
+          >
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
 
