@@ -43,13 +43,15 @@ io.on('connection', socket => {
     'message:send',
     ({ senderId, receiverId, text, _id, createdAt }) => {
       const receiver = getUser(receiverId);
-      io.to(receiver.socketId).emit('message:get', {
-        receiverId,
-        senderId,
-        text,
-        _id,
-        createdAt,
-      });
+      if(receiver){
+        io.to(receiver.socketId).emit('message:get', {
+          receiverId,
+          senderId,
+          text,
+          _id,
+          createdAt,
+        });
+      }
     },
   );
 

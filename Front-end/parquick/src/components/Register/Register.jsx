@@ -8,8 +8,11 @@ import { emptyUser } from '../../types/User';
 import { testCard } from '../../types/BankCard';
 import { client } from '../../queries/client';
 import { USER_REGISTER } from '../../queries/userQueries';
+import { useNavigate } from "react-router-dom";
 
 function Register(): React.MixedElement {
+
+  const navigate = useNavigate();
   const [card, setCard] = useState<BankCard>(testCard);
   const [user, setUser] = useState<User>(emptyUser);
 
@@ -39,6 +42,7 @@ function Register(): React.MixedElement {
       .then(result => {
         // TODO: store the result in localstorage
         // auto-login or redirect to login
+        navigate('/Login');
       });
   }
 

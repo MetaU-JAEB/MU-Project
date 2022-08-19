@@ -1,6 +1,6 @@
 .messenger {
   display: flex;
-  height: calc(100vh - 59px);
+  height: calc(100vh - 100px);
 }
 /**
  * 59px is the navbar size

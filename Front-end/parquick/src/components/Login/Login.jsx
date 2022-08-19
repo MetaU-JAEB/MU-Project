@@ -43,7 +43,7 @@ function Login(): React.MixedElement {
         <div className="inner-form">
           <h1>Login</h1>
           <label htmlFor="e-mail" className="input-label">
-            Name:
+            E-mail:
           </label>
           <input
             type="text"

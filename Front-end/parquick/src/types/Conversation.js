@@ -7,4 +7,5 @@ export type Conversation = {
     firstName: string,
     lastName: string,
   },
+  createdAt : string
 };

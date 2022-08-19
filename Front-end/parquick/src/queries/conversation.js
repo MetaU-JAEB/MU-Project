@@ -16,6 +16,7 @@ query MyConversations{
         lastName
       }
       _id
+      createdAt
     }
   }
 `;

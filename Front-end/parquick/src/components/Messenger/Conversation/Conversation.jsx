@@ -19,7 +19,9 @@ function Conversation({
         src="https://picsum.photos/id/222/408/485"
         alt="Other Profile"
       />
-      <span className="conversation-name">{`${conversation.user.firstName} ${conversation.user.lastName}`}</span>
+      <span className="conversation-name">{`${conversation.user.firstName} ${
+        conversation.user.lastName
+      }, ${new Date(conversation.createdAt).toLocaleDateString()}`}</span>
     </div>
   );
 }
